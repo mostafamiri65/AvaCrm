@@ -1,0 +1,6 @@
+@AvaCrm.Api_HostAddress = http://localhost:5103
+
+GET {{AvaCrm.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
