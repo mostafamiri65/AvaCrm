@@ -2,5 +2,6 @@
 
 public class Role : BaseEntity
 {
-	public string? Title { get; set; }
+	public string? TitleEnglish { get; set; }
+	public string? TitlePersian { get; set; }
 }
