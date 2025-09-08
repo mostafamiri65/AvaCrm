@@ -1,4 +1,5 @@
 ﻿using AvaCrm.Persistence.Data;
+using AvaCrm.Persistence.Repositories.Accounts;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -15,6 +16,9 @@ public static class PersistenceServicesRegistration
 				.GetConnectionString("AvaCrmConnectionString"));
 		});
 
+		services.AddScoped<IRoleRepository, RoleRepository>();
+		services.AddScoped<IUserRepository, UserRepository>();
+		services.AddScoped<IPermissionRepository, PermissionRepository>();
 
 		return services;
 	}

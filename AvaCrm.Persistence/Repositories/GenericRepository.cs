@@ -50,8 +50,5 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEnt
 		_context.Set<TEntity>().Update(entity);
 		await _context.SaveChangesAsync(cancellationToken);
 	}
-	public async Task<bool> Exists(long entityId, CancellationToken cancellationToken = default)
-	{
-		return await _context.Set<TEntity>().AnyAsync(e => e.Id == entityId && !e.IsDelete, cancellationToken);
-	}
+	
 }

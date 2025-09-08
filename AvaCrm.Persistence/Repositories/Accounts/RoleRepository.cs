@@ -1,6 +1,4 @@
-﻿using AvaCrm.Persistence.Data;
-
-namespace AvaCrm.Persistence.Repositories.Accounts;
+﻿namespace AvaCrm.Persistence.Repositories.Accounts;
 
 public class RoleRepository : GenericRepository<Role>, IRoleRepository
 {
