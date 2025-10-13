@@ -117,5 +117,15 @@ export class ApiAddressUtility {
   static deleteInteraction(id: number): string {
     return `/Interactions/${id}`;
   }
+  // FollowUps
+  static followUps: string = "/FollowUps";
+  static followUpById: string = "/FollowUps";
+  static followUpsByCustomer: string = "/FollowUps/by-customer";
+  static upcomingFollowUps: string = "/FollowUps/upcoming";
+
+  // Dashboard
+  static dashboardSummary: string = "/Dashboard/summary";
+  static upcomingActivities: string = "/Dashboard/upcoming-activities";
+  static recentActivities: string = "/Dashboard/recent-activities";
 
 }

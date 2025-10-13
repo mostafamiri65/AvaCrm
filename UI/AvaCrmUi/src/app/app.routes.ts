@@ -28,6 +28,7 @@ import {
 import {
   CustomerInteractionsComponent
 } from './pages/customerManagement/customer-interactions.component/customer-interactions.component';
+import {FollowUpListComponent} from './pages/customerManagement/follow-up-list.component/follow-up-list.component';
 
 export const routes: Routes = [
   {
@@ -44,7 +45,8 @@ export const routes: Routes = [
       {path: 'tags', component: TagListComponent},
       {path: 'customers/tags/:id', component: CustomerTagsComponent},
       {path: 'customers/notes/:id', component: CustomerNotesComponent},
-      {path: 'customers/interactions/:id', component: CustomerInteractionsComponent}
+      {path: 'customers/interactions/:id', component: CustomerInteractionsComponent},
+      { path: 'customers/follow-ups/:id', component: FollowUpListComponent }
       // { path: 'customers/edit/:id', component: CustomerEditComponent },
 
     ],

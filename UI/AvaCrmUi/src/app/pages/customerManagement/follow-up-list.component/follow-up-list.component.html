@@ -1,0 +1,201 @@
+<!-- customer-follow-ups.component.html -->
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h4>مدیریت پیگیری‌های مشتری</h4>
+    <button class="btn btn-secondary" (click)="backToCustomers()">
+      <i class="fas fa-arrow-right"></i> بازگشت به لیست مشتریان
+    </button>
+  </div>
+
+  <!-- کارت اطلاعات مشتری -->
+  <div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+      <h5 class="mb-0">
+        <i class="fas fa-user me-2"></i>
+        اطلاعات مشتری
+      </h5>
+    </div>
+    <div class="card-body">
+      <div *ngIf="customerLoading" class="text-center">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+
+      <div *ngIf="!customerLoading && customer" class="row">
+        <div class="col-md-3">
+          <strong>کد مشتری:</strong>
+          <span class="badge bg-secondary me-2">{{ customer.code }}</span>
+        </div>
+
+        <div class="col-md-3">
+          <strong>نام:</strong>
+          {{ getCustomerName() }}
+        </div>
+
+        <div class="col-md-9 mt-2">
+          <strong>تعداد پیگیری‌ها:</strong>
+          <span class="badge bg-info">{{ followUps.length }}</span>
+        </div>
+      </div>
+
+      <div *ngIf="!customerLoading && !customer" class="text-center text-muted">
+        <i class="fas fa-exclamation-triangle me-2"></i>
+        اطلاعات مشتری یافت نشد
+      </div>
+    </div>
+  </div>
+
+  <!-- دکمه افزودن پیگیری جدید -->
+  <div class="mb-3">
+    <button class="btn btn-success" (click)="startAddFollowUp()" [disabled]="isAdding || isEditing">
+      <i class="fas fa-plus"></i> پیگیری جدید
+    </button>
+  </div>
+
+  <!-- فرم افزودن پیگیری جدید -->
+  <div *ngIf="isAdding" class="card mb-4">
+    <div class="card-header bg-success text-white">
+      <h5 class="mb-0">پیگیری جدید</h5>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-12 mb-3">
+          <label class="form-label">توضیحات پیگیری *</label>
+          <textarea class="form-control"
+                    [(ngModel)]="newFollowUp.description"
+                    rows="4"
+                    placeholder="توضیحات پیگیری را وارد کنید..."></textarea>
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <label class="form-label">تاریخ پیگیری بعدی</label>
+          <input type="datetime-local"
+                 class="form-control"
+                 [(ngModel)]="newFollowUp.nextFollowUpDate">
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <label class="form-label">توضیحات پیگیری بعدی</label>
+          <input type="text"
+                 class="form-control"
+                 [(ngModel)]="newFollowUp.nextFollowUpDescription"
+                 placeholder="توضیحات پیگیری بعدی">
+        </div>
+      </div>
+
+      <div class="d-flex gap-2">
+        <button class="btn btn-success"
+                (click)="saveNewFollowUp()"
+                [disabled]="!newFollowUp.description.trim()">
+          <i class="fas fa-save"></i> ذخیره
+        </button>
+        <button class="btn btn-secondary" (click)="cancelAdd()">
+          <i class="fas fa-times"></i> لغو
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- لیست پیگیری‌ها -->
+  <div class="card">
+    <div class="card-header">
+      <h5 class="mb-0">پیگیری‌های ثبت شده</h5>
+    </div>
+    <div class="card-body">
+      <div *ngIf="loading" class="text-center py-3">
+        <div class="spinner-border" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+
+      <div *ngIf="!loading && followUps.length === 0" class="text-center text-muted py-4">
+        <i class="fas fa-clipboard-list fa-3x mb-3"></i>
+        <p>هیچ پیگیری برای این مشتری ثبت نشده است</p>
+      </div>
+
+      <div *ngFor="let followUp of followUps" class="follow-up-item mb-4 p-3 border rounded">
+        <!-- حالت نمایش -->
+        <div *ngIf="!isEditing || editingFollowUp.id !== followUp.id">
+          <div class="d-flex justify-content-between align-items-start mb-2">
+            <div>
+              <small class="text-muted">
+                <i class="fas fa-calendar"></i>
+                ایجاد شده در: {{ formatDate(followUp.createdDate) }}
+              </small>
+
+              <span *ngIf="followUp.nextFollowUpDate"
+                    [class]="isOverdue(followUp) ? 'badge bg-danger me-2' : 'badge bg-warning me-2'">
+                <i class="fas fa-clock me-1"></i>
+                پیگیری بعدی: {{ formatDate(followUp.nextFollowUpDate) }}
+                <span *ngIf="isOverdue(followUp)">(گذشته)</span>
+              </span>
+            </div>
+
+            <div class="btn-group btn-group-sm">
+              <button class="btn btn-outline-primary btn-sm"
+                      (click)="startEditFollowUp(followUp)"
+                      title="ویرایش">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button class="btn btn-outline-danger btn-sm"
+                      (click)="deleteFollowUp(followUp.id)"
+                      title="حذف">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </div>
+
+          <p class="mb-2" style="white-space: pre-line">
+            <strong>توضیحات:</strong><br>
+            {{ followUp.description }}
+          </p>
+
+          <p *ngIf="followUp.nextFollowUpDescription" class="mb-0 text-muted" style="white-space: pre-line">
+            <strong>یادآوری برای پیگیری بعدی:</strong><br>
+            {{ followUp.nextFollowUpDescription }}
+          </p>
+        </div>
+
+        <!-- حالت ویرایش -->
+        <div *ngIf="isEditing && editingFollowUp.id === followUp.id">
+          <div class="row">
+            <div class="col-md-12 mb-3">
+              <label class="form-label">توضیحات پیگیری *</label>
+              <textarea class="form-control"
+                        [(ngModel)]="editingFollowUp.description"
+                        rows="4"></textarea>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label class="form-label">تاریخ پیگیری بعدی</label>
+              <input type="datetime-local"
+                     class="form-control"
+                     [value]="editingFollowUp.nextFollowUpDate ? formatDateForInput(editingFollowUp.nextFollowUpDate) : ''"
+                     (input)="onEditingFollowUpDateChange($event)">
+                </div>
+
+            <div class="col-md-6 mb-3">
+              <label class="form-label">توضیحات پیگیری بعدی</label>
+              <input type="text"
+                     class="form-control"
+                     [(ngModel)]="editingFollowUp.nextFollowUpDescription"
+                     placeholder="توضیحات پیگیری بعدی">
+            </div>
+          </div>
+
+          <div class="d-flex gap-2">
+            <button class="btn btn-success btn-sm"
+                    (click)="saveEdit()"
+                    [disabled]="!editingFollowUp.description.trim()">
+              <i class="fas fa-save"></i> ذخیره
+            </button>
+            <button class="btn btn-secondary btn-sm" (click)="cancelEdit()">
+              <i class="fas fa-times"></i> لغو
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

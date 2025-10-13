@@ -2,6 +2,7 @@
 using System.Reflection;
 using AvaCrm.Application.Features.CustomerManagement.Customers;
 using AvaCrm.Application.Features.CustomerManagement.Tags;
+using AvaCrm.Application.Features.Dashboard;
 
 namespace AvaCrm.Application;
 
@@ -26,5 +27,6 @@ public static class ApplicationServicesRegistration
         services.AddScoped<INoteService, NoteService>();
         services.AddScoped<ITagService, TagService>();
         services.AddScoped<ICustomerTagService, CustomerTagService>();
+        services.AddScoped<IDashboardService, DashboardService>();
     }
 }

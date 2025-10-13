@@ -88,6 +88,9 @@ export class CustomerListComponent implements OnInit {
   goToCustomerTags(customerId: number): void {
     this.router.navigate(['/customers/tags', customerId]);
   }
+  goToCustomerFollowUps(customerId: number): void {
+    this.router.navigate(['/customers/follow-ups', customerId]);
+  }
   goToCustomerNotes(customerId: number): void {
     this.router.navigate(['/customers/notes', customerId]);
   }

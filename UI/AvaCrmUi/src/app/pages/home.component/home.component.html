@@ -1,1 +1,282 @@
-<p>home.component works!</p>
+<!-- dashboard.component.html -->
+<div class="container-fluid py-4">
+  <!-- هدر داشبورد -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h1 class="h3 text-primary mb-1">داشبورد AvaCRM</h1>
+      <p class="text-muted mb-0">خلاصه فعالیت‌ها و آمار سیستم</p>
+    </div>
+    <button class="btn btn-outline-primary" (click)="refreshData()">
+      <i class="fas fa-sync-alt me-2"></i>بروزرسانی
+    </button>
+  </div>
+
+  <!-- کارت‌های آمار -->
+  <div class="row mb-4">
+    <!-- کل مشتریان -->
+    <div class="col-xl-3 col-md-6 mb-4">
+      <div class="card border-start-primary border-3 shadow h-100 py-2">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col me-2">
+              <div class="text-xs fw-bold text-primary text-uppercase mb-1">
+                کل مشتریان
+              </div>
+              <div class="h5 mb-0 fw-bold text-gray-800">
+                <span *ngIf="loading.summary" class="spinner-border spinner-border-sm"></span>
+                <span *ngIf="!loading.summary">{{ summary?.totalCustomers | number:'fa' }}</span>
+              </div>
+            </div>
+            <div class="col-auto">
+              <i class="fas fa-users fa-2x text-gray-300"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- پیگیری‌های هفته اخیر -->
+    <div class="col-xl-3 col-md-6 mb-4">
+      <div class="card border-start-success border-3 shadow h-100 py-2">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col me-2">
+              <div class="text-xs fw-bold text-success text-uppercase mb-1">
+                پیگیری‌های هفته اخیر
+              </div>
+              <div class="h5 mb-0 fw-bold text-gray-800">
+                <span *ngIf="loading.summary" class="spinner-border spinner-border-sm"></span>
+                <span *ngIf="!loading.summary">{{ summary?.recentFollowUpsCount | number:'fa' }}</span>
+              </div>
+            </div>
+            <div class="col-auto">
+              <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- تعاملات هفته اخیر -->
+    <div class="col-xl-3 col-md-6 mb-4">
+      <div class="card border-start-info border-3 shadow h-100 py-2">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col me-2">
+              <div class="text-xs fw-bold text-info text-uppercase mb-1">
+                تعاملات هفته اخیر
+              </div>
+              <div class="h5 mb-0 fw-bold text-gray-800">
+                <span *ngIf="loading.summary" class="spinner-border spinner-border-sm"></span>
+                <span *ngIf="!loading.summary">{{ summary?.recentInteractionsCount | number:'fa' }}</span>
+              </div>
+            </div>
+            <div class="col-auto">
+              <i class="fas fa-handshake fa-2x text-gray-300"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- فعالیت‌های پیش‌رو -->
+    <div class="col-xl-3 col-md-6 mb-4">
+      <div class="card border-start-warning border-3 shadow h-100 py-2">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col me-2">
+              <div class="text-xs fw-bold text-warning text-uppercase mb-1">
+                فعالیت‌های پیش‌رو
+              </div>
+              <div class="h5 mb-0 fw-bold text-gray-800">
+                <span *ngIf="loading.summary" class="spinner-border spinner-border-sm"></span>
+                <span *ngIf="!loading.summary">
+                  {{ (summary?.upcomingFollowUpsCount || 0) + (summary?.upcomingInteractionsCount || 0) | number:'fa' }}
+                </span>
+              </div>
+            </div>
+            <div class="col-auto">
+              <i class="fas fa-calendar-alt fa-2x text-gray-300"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <!-- فعالیت‌های پیش‌رو -->
+    <div class="col-xl-6 col-lg-6 mb-4">
+      <div class="card shadow h-100">
+        <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+          <h6 class="m-0 fw-bold text-primary">
+            <i class="fas fa-clock me-2"></i>فعالیت‌های پیش‌رو
+          </h6>
+          <span class="badge bg-primary">{{ upcomingActivities.length }}</span>
+        </div>
+        <div class="card-body">
+          <div *ngIf="loading.upcoming" class="text-center py-4">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+
+          <div *ngIf="!loading.upcoming && upcomingActivities.length === 0"
+               class="text-center text-muted py-4">
+            <i class="fas fa-calendar-times fa-3x mb-3"></i>
+            <p>هیچ فعالیت پیش‌رویی وجود ندارد</p>
+          </div>
+
+          <div class="list-group list-group-flush">
+            <div *ngFor="let activity of upcomingActivities"
+                 class="list-group-item d-flex align-items-start p-3 border-0">
+              <div class="flex-shrink-0">
+                <i [class]="getActivityIcon(activity.activityType) + ' fa-lg text-warning'"></i>
+              </div>
+              <div class="flex-grow-1 ms-3">
+                <div class="d-flex justify-content-between align-items-start mb-1">
+                  <h6 class="mb-0 fw-bold">{{ activity.title }}</h6>
+                  <span [class]="getActivityBadgeClass(activity.activityType)" class="small">
+                    {{ getActivityTypeText(activity.activityType) }}
+                  </span>
+                </div>
+                <p class="mb-1 text-muted small">{{ activity.description }}</p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <small class="text-primary fw-bold">
+                    <i class="fas fa-user me-1"></i>
+                    {{ activity.customerName }}
+                  </small>
+                  <small [class]="isToday(activity.activityDate) ? 'badge bg-danger' : 'badge bg-secondary'">
+                    <i class="fas fa-calendar me-1"></i>
+                    {{ getDateStatus(activity.activityDate) }}
+                  </small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- فعالیت‌های اخیر -->
+    <div class="col-xl-6 col-lg-6 mb-4">
+      <div class="card shadow h-100">
+        <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+          <h6 class="m-0 fw-bold text-success">
+            <i class="fas fa-history me-2"></i>فعالیت‌های اخیر
+          </h6>
+          <span class="badge bg-success">{{ recentActivities.length }}</span>
+        </div>
+        <div class="card-body">
+          <div *ngIf="loading.recent" class="text-center py-4">
+            <div class="spinner-border text-success" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+
+          <div *ngIf="!loading.recent && recentActivities.length === 0"
+               class="text-center text-muted py-4">
+            <i class="fas fa-clipboard-check fa-3x mb-3"></i>
+            <p>هیچ فعالیتی در ۷ روز گذشته ثبت نشده است</p>
+          </div>
+
+          <div class="timeline">
+            <div *ngFor="let activity of recentActivities"
+                 class="timeline-item d-flex align-items-start mb-3">
+              <div class="timeline-marker">
+                <i [class]="getActivityIcon(activity.activityType) + ' text-' + (activity.activityType === 'FollowUp' ? 'warning' : 'info')"></i>
+              </div>
+              <div class="timeline-content flex-grow-1 ms-3 p-3 bg-light rounded">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                  <h6 class="mb-0 fw-bold">{{ activity.title }}</h6>
+                  <small class="text-muted">{{ formatDateTime(activity.activityDate) }}</small>
+                </div>
+                <p class="mb-2 text-muted small">{{ activity.description }}</p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <span class="badge bg-light text-dark">
+                    <i class="fas fa-user me-1"></i>
+                    {{ activity.customerName }}
+                  </span>
+                  <span [class]="getActivityBadgeClass(activity.activityType)" class="small">
+                    {{ getActivityTypeText(activity.activityType) }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- کارت‌های سریع -->
+  <div class="row mt-4">
+    <div class="col-lg-3 col-md-6 mb-4">
+      <div class="card bg-primary text-white shadow h-100">
+        <div class="card-body">
+          <div class="text-center">
+            <i class="fas fa-users fa-3x mb-3"></i>
+            <h5>مشتریان</h5>
+            <p>مدیریت اطلاعات مشتریان</p>
+          </div>
+        </div>
+        <div class="card-footer bg-primary-dark">
+          <a [routerLink]="['/customers']" class="btn btn-light btn-sm w-100">
+            <i class="fas fa-arrow-left me-2"></i>مشاهده مشتریان
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6 mb-4">
+      <div class="card bg-success text-white shadow h-100">
+        <div class="card-body">
+          <div class="text-center">
+            <i class="fas fa-clipboard-list fa-3x mb-3"></i>
+            <h5>پیگیری‌ها</h5>
+            <p>مدیریت پیگیری‌های مشتریان</p>
+          </div>
+        </div>
+        <div class="card-footer bg-success-dark">
+          <a [routerLink]="['/follow-ups']" class="btn btn-light btn-sm w-100">
+            <i class="fas fa-arrow-left me-2"></i>مدیریت پیگیری‌ها
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6 mb-4">
+      <div class="card bg-info text-white shadow h-100">
+        <div class="card-body">
+          <div class="text-center">
+            <i class="fas fa-handshake fa-3x mb-3"></i>
+            <h5>تعاملات</h5>
+            <p>ثبت و مدیریت تعاملات</p>
+          </div>
+        </div>
+        <div class="card-footer bg-info-dark">
+          <a [routerLink]="['/interactions']" class="btn btn-light btn-sm w-100">
+            <i class="fas fa-arrow-left me-2"></i>مدیریت تعاملات
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6 mb-4">
+      <div class="card bg-warning text-white shadow h-100">
+        <div class="card-body">
+          <div class="text-center">
+            <i class="fas fa-chart-line fa-3x mb-3"></i>
+            <h5>گزارشات</h5>
+            <p>گزارشات و آمار پیشرفته</p>
+          </div>
+        </div>
+        <div class="card-footer bg-warning-dark">
+          <a [routerLink]="['/reports']" class="btn btn-light btn-sm w-100">
+            <i class="fas fa-arrow-left me-2"></i>مشاهده گزارشات
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

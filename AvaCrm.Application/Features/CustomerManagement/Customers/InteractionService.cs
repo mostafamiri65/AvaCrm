@@ -43,26 +43,26 @@ namespace AvaCrm.Application.Features.CustomerManagement.Customers
 		{
 			try
 			{
-				var query = _interactionRepository.GetAll().Where(i => i.CustomerId == customerId);
+				var query = await _interactionRepository.GetByCustomerId(customerId, cancellationToken);
 
 				// Apply search filter
 				if (!string.IsNullOrWhiteSpace(request.SearchTerm))
 				{
 					query = query.Where(i => i.Subject.Contains(request.SearchTerm) ||
-											i.Description.Contains(request.SearchTerm));
+											i.Description.Contains(request.SearchTerm)).ToList();
 				}
 
 				// Apply sorting
 				query = request.SortDirection == "desc" ?
-					query.OrderByDescending(i => i.CreationDate) :
-					query.OrderBy(i => i.CreationDate);
+					query.OrderByDescending(i => i.CreationDate).ToList() :
+					query.OrderBy(i => i.CreationDate).ToList();
 
-				var totalCount = await query.CountAsync(cancellationToken);
+				var totalCount =  query.Count;
 
-				var interactions = await query
+				var interactions =  query
 					.Skip((request.PageNumber - 1) * request.PageSize)
 					.Take(request.PageSize)
-					.ToListAsync(cancellationToken);
+					.ToList();
 
 				var result = new PaginatedResult<InteractionListDto>
 				{

@@ -41,26 +41,26 @@ public class FollowUpService : BaseService, IFollowUpService
 	{
 		try
 		{
-			var query = _followUpRepository.GetAll().Where(f => f.CustomerId == customerId);
+			var query = await _followUpRepository.GetByCustomerId(customerId, cancellationToken);
 
 			// Apply search filter
 			if (!string.IsNullOrWhiteSpace(request.SearchTerm))
 			{
 				query = query.Where(f => f.Description.Contains(request.SearchTerm) ||
-										f.NextFollowUpDescription.Contains(request.SearchTerm));
+										f.NextFollowUpDescription.Contains(request.SearchTerm)).ToList();
 			}
 
 			// Apply sorting
 			query = request.SortDirection == "desc" ?
-				query.OrderByDescending(f => f.NextFollowUpDate) :
-				query.OrderBy(f => f.NextFollowUpDate);
+				query.OrderByDescending(f => f.NextFollowUpDate).ToList() :
+				query.OrderBy(f => f.NextFollowUpDate).ToList();
 
-			var totalCount = await query.CountAsync(cancellationToken);
+			var totalCount = query.Count;
 
-			var followUps = await query
+			var followUps =  query
 				.Skip((request.PageNumber - 1) * request.PageSize)
 				.Take(request.PageSize)
-				.ToListAsync(cancellationToken);
+				.ToList();
 
 			var result = new PaginatedResult<FollowUpListDto>
 			{

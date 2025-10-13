@@ -1,8 +1,10 @@
 ﻿using AvaCrm.Domain.Contracts.CustomerManagement;
+using AvaCrm.Domain.Contracts.Dashboard;
 using AvaCrm.Persistence.Data;
 using AvaCrm.Persistence.Repositories.Accounts;
 using AvaCrm.Persistence.Repositories.Commons;
 using AvaCrm.Persistence.Repositories.CustomerManagement;
+using AvaCrm.Persistence.Repositories.Dashboard;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -35,6 +37,7 @@ public static class PersistenceServicesRegistration
         services.AddScoped<IInteractionRepository, InteractionRepository>();
         services.AddScoped<INoteRepository, NoteRepository>();
         services.AddScoped<ICustomerTagRepository, CustomerTagRepository>();
+        services.AddScoped<IDashboardRepository, DashboardRepository>();
 		return services;
 	}
 }

@@ -3,7 +3,6 @@ using AvaCrm.Application.DTOs.CustomerManagement.FollowUps;
 using AvaCrm.Application.Features.CustomerManagement.Customers;
 using AvaCrm.Application.Pagination;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AvaCrm.Api.Controllers

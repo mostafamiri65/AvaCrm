@@ -16,6 +16,7 @@
     <Folder Include="Features\Commons\Cities\Handlers\Queries\" />
     <Folder Include="Features\Commons\Cities\Requests\Commands\" />
     <Folder Include="Features\Commons\Cities\Requests\Queries\" />
+    <Folder Include="Features\Dashboard\" />
   </ItemGroup>
 
   <ItemGroup>

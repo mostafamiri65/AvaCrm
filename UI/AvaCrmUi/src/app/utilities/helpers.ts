@@ -10,3 +10,4 @@ function convertToCustomerType(value: string): CustomerType {
       throw new Error('Invalid customer type value');
   }
 }
+
