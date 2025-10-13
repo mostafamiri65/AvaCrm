@@ -2,10 +2,10 @@
 
 public interface ICountryRepository 
 {
-	Task<Country> GetById(int id);
+	Task<Country?> GetById(int id);
 	Task<List<Country>> GetAll();
-	Task<Country> CreateCountry(string name);
-	Task UpdateCountry(Country country);
+	Task<bool> CreateCountry(string name);
+	Task<bool> UpdateCountry(Country country);
 	Task<bool> DeleteCountry(int id);
-	bool IsExist(string name);
+	Task<bool> IsExist(string name,int countryId);
 }

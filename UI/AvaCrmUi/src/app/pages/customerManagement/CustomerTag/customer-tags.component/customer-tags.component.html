@@ -1,0 +1,82 @@
+<!-- customer-tags.component.html -->
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h4>مدیریت تگ‌های مشتری</h4>
+    <button class="btn btn-secondary" (click)="backToCustomers()">
+      <i class="fas fa-arrow-right"></i> بازگشت به لیست مشتریان
+    </button>
+  </div>
+
+  <!-- بخش افزودن تگ جدید -->
+  <div class="card mb-4">
+    <div class="card-header">
+      <h5 class="mb-0">افزودن تگ جدید</h5>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-8">
+          <select class="form-select" [(ngModel)]="selectedTagId">
+            <option [value]="undefined">انتخاب تگ</option>
+            <option *ngFor="let tag of availableTags" [value]="tag.id">
+              {{ tag.title }}
+            </option>
+          </select>
+        </div>
+        <div class="col-md-4">
+          <button class="btn btn-success w-100"
+                  (click)="addTag()"
+                  [disabled]="!selectedTagId">
+            <i class="fas fa-plus"></i> افزودن تگ
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- لیست تگ‌های مشتری -->
+  <div class="card">
+    <div class="card-header">
+      <h5 class="mb-0">تگ‌های اختصاص داده شده</h5>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-striped">
+          <thead>
+          <tr>
+            <th>عنوان تگ</th>
+            <th>کد مشتری</th>
+            <th>عملیات</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngIf="loading">
+            <td colspan="3" class="text-center">
+              <div class="spinner-border" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            </td>
+          </tr>
+          <tr *ngFor="let customerTag of customerTags">
+            <td>
+              <span class="badge bg-primary">{{ customerTag.tagTitle }}</span>
+            </td>
+            <td>{{ customerTag.customerCode }}</td>
+            <td>
+              <button class="btn btn-outline-danger btn-sm"
+                      (click)="removeTag(customerTag.tagId)"
+                      title="حذف تگ">
+                <i class="fas fa-trash"></i>
+              </button>
+            </td>
+          </tr>
+          <tr *ngIf="!loading && customerTags.length === 0">
+            <td colspan="3" class="text-center text-muted">
+              هیچ تگی برای این مشتری تعریف نشده است
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

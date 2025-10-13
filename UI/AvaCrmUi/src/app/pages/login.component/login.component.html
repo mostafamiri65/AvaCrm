@@ -1,0 +1,52 @@
+<div class="page-wrapper full-page fontIransans">
+  <div class="page-content d-flex align-items-center justify-content-center">
+    <div class="row w-100 mx-0 auth-page">
+      <div class="col-md-8 col-xl-6 mx-auto">
+        <div class="card">
+          <div class="row">
+            <div class="col-md-4 pe-md-0">
+              <div class="auth-side-wrapper"></div>
+            </div>
+            <div class="col-md-8 ps-md-0">
+              <div class="auth-form-wrapper px-4 py-5">
+                <a href="#" class="noble-ui-logo d-block mb-2">Ava<span>CRM</span></a>
+                <h5 class="text-muted fw-normal mb-4">خوش آمدید! به حساب کاربری خود وارد شوید</h5>
+
+                <!-- نمایش پیام موفقیت -->
+                <div *ngIf="successMessage" class="alert alert-success">
+                  {{ successMessage }}
+                </div>
+
+                <!-- نمایش خطا -->
+                <div *ngIf="errorMessage" class="alert alert-danger">
+                  {{ errorMessage }}
+                </div>
+
+                <form class="forms-sample" (submit)="loginSubmit()" #loginForm="ngForm">
+                  <div class="mb-3">
+                    <label for="userEmail" class="form-label">آدرس ایمیل | شماره موبایل</label>
+                    <input type="text" class="form-control" id="userEmail"
+                           [(ngModel)]="model.username" name="username"
+                           placeholder="ایمیل یا شماره موبایل را وارد نمایید">
+                  </div>
+                  <div class="mb-3">
+                    <label for="userPassword" class="form-label">رمز عبور</label>
+                    <input type="password" class="form-control" id="userPassword"
+                           [(ngModel)]="model.password" name="password"
+                           autocomplete="current-password" placeholder="رمز عبور را وارد نمایید">
+                  </div>
+                  <div>
+                    <button type="submit" class="btn btn-primary me-2 mb-2 mb-md-0 text-white"
+                            [disabled]="isLoading">
+                      {{ isLoading ? 'در حال ورود...' : 'ورود' }}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

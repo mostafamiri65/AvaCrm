@@ -1,5 +1,8 @@
-﻿using AvaCrm.Persistence.Data;
+﻿using AvaCrm.Domain.Contracts.CustomerManagement;
+using AvaCrm.Persistence.Data;
 using AvaCrm.Persistence.Repositories.Accounts;
+using AvaCrm.Persistence.Repositories.Commons;
+using AvaCrm.Persistence.Repositories.CustomerManagement;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -19,7 +22,19 @@ public static class PersistenceServicesRegistration
 		services.AddScoped<IRoleRepository, RoleRepository>();
 		services.AddScoped<IUserRepository, UserRepository>();
 		services.AddScoped<IPermissionRepository, PermissionRepository>();
-
+		services.AddScoped<ICountryRepository,CountryRepository>();
+		services.AddScoped<IProvinceRepository, ProvinceRepository>();
+		services.AddScoped<ICityRepository,CityRepository>();
+        services.AddScoped<ITagRepository, TagRepository>();
+        services.AddScoped<ICustomerRepository, CustomerRepository>();
+        services.AddScoped<IIndividualCustomerRepository, IndividualCustomerRepository>();
+        services.AddScoped<IOrganizationCustomerRepository, OrganizationCustomerRepository>();
+        services.AddScoped<IContactPersonRepository, ContactPersonRepository>();
+        services.AddScoped<ICustomerAddressRepository, CustomerAddressRepository>();
+        services.AddScoped<IFollowUpRepository, FollowUpRepository>();
+        services.AddScoped<IInteractionRepository, InteractionRepository>();
+        services.AddScoped<INoteRepository, NoteRepository>();
+        services.AddScoped<ICustomerTagRepository, CustomerTagRepository>();
 		return services;
 	}
 }

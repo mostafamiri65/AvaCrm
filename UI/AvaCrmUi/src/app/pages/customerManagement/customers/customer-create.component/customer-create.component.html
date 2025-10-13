@@ -1,0 +1,190 @@
+
+<div class="row iranSans">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="card-title mb-0">ایجاد مشتری جدید</h5>
+      </div>
+
+      <div class="card-body">
+        <form (ngSubmit)="onSubmit()">
+
+          <!-- اطلاعات اصلی مشتری -->
+          <div class="row" [formGroup]="customerForm">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="code" class="form-label">کد مشتری *</label>
+                <input type="text" class="form-control" id="code" formControlName="code"
+                       (blur)="checkCodeUnique()"
+                       [class.is-invalid]="isFieldInvalid(customerForm, 'code') || !isCodeUnique">
+                <div class="invalid-feedback" *ngIf="isFieldInvalid(customerForm, 'code')">
+                  {{ getFieldError(customerForm, 'code') }}
+                </div>
+                <div class="invalid-feedback" *ngIf="!isCodeUnique && customerForm.get('code')?.valid">
+                  کد مشتری تکراری است
+                </div>
+                <div class="form-text">کد یکتای شناسایی مشتری (حداقل ۳ کاراکتر)</div>
+                <div *ngIf="checkingCode" class="text-primary mt-1">
+                  <small>در حال بررسی کد...</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="customerType" class="form-label">نوع مشتری *</label>
+                <select class="form-select" id="customerType" formControlName="customerType"
+                        [class.is-invalid]="isFieldInvalid(customerForm, 'customerType')">
+                  <option [value]="CustomerType.Individual">حقیقی</option>
+                  <option [value]="CustomerType.Organization">حقوقی</option>
+                </select>
+                <div class="invalid-feedback" *ngIf="isFieldInvalid(customerForm, 'customerType')">
+                  {{ getFieldError(customerForm, 'customerType') }}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row" [formGroup]="customerForm">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="email" class="form-label">ایمیل *</label>
+                <input type="email" class="form-control" id="email" formControlName="email"
+                       [class.is-invalid]="isFieldInvalid(customerForm, 'email')">
+                <div class="invalid-feedback" *ngIf="isFieldInvalid(customerForm, 'email')">
+                  {{ getFieldError(customerForm, 'email') }}
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="phoneNumber" class="form-label">شماره تلفن *</label>
+                <input type="tel" class="form-control" id="phoneNumber" formControlName="phoneNumber"
+                       placeholder="مثال: 09123456789 یا 02188564732"
+                       [class.is-invalid]="isFieldInvalid(customerForm, 'phoneNumber')">
+                <div class="invalid-feedback" *ngIf="isFieldInvalid(customerForm, 'phoneNumber')">
+                  {{ getFieldError(customerForm, 'phoneNumber') }}
+                </div>
+                <div class="form-text">شماره تلفن باید بین ۱۰ تا ۱۵ رقم باشد</div>
+              </div>
+            </div>
+          </div>
+          <!-- اطلاعات مشتری حقیقی -->
+          <div *ngIf="customerType === CustomerType.Individual" class="border rounded p-3 mb-3">
+            <h6 class="text-primary mb-3">
+              <i class="fas fa-user me-2"></i>اطلاعات مشتری حقیقی
+            </h6>
+
+            <div [formGroup]="individualForm">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="mb-3">
+                    <label for="firstName" class="form-label">نام *</label>
+                    <input type="text" class="form-control" id="firstName" formControlName="firstName"
+                           [class.is-invalid]="isFieldInvalid(individualForm, 'firstName')">
+                    <div class="invalid-feedback" *ngIf="isFieldInvalid(individualForm, 'firstName')">
+                      {{ getFieldError(individualForm, 'firstName') }}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <div class="mb-3">
+                    <label for="lastName" class="form-label">نام خانوادگی *</label>
+                    <input type="text" class="form-control" id="lastName" formControlName="lastName"
+                           [class.is-invalid]="isFieldInvalid(individualForm, 'lastName')">
+                    <div class="invalid-feedback" *ngIf="isFieldInvalid(individualForm, 'lastName')">
+                      {{ getFieldError(individualForm, 'lastName') }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="mb-3">
+                    <label for="birthDate" class="form-label">تاریخ تولد</label>
+                    <input type="date" class="form-control" id="birthDate" formControlName="birthDate">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- اطلاعات مشتری حقوقی -->
+          <div *ngIf="customerType === CustomerType.Organization" class="border rounded p-3 mb-3">
+            <h6 class="text-primary mb-3">
+              <i class="fas fa-building me-2"></i>اطلاعات مشتری حقوقی
+            </h6>
+
+            <div [formGroup]="organizationForm">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="mb-3">
+                    <label for="companyName" class="form-label">نام شرکت *</label>
+                    <input type="text" class="form-control" id="companyName" formControlName="companyName"
+                           [class.is-invalid]="isFieldInvalid(organizationForm, 'companyName')">
+                    <div class="invalid-feedback" *ngIf="isFieldInvalid(organizationForm, 'companyName')">
+                      {{ getFieldError(organizationForm, 'companyName') }}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <div class="mb-3">
+                    <label for="registrationNumber" class="form-label">شماره ثبت *</label>
+                    <input type="text" class="form-control" id="registrationNumber" formControlName="registrationNumber"
+                           [class.is-invalid]="isFieldInvalid(organizationForm, 'registrationNumber')">
+                    <div class="invalid-feedback" *ngIf="isFieldInvalid(organizationForm, 'registrationNumber')">
+                      {{ getFieldError(organizationForm, 'registrationNumber') }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="mb-3">
+                    <label for="industry" class="form-label">صنعت *</label>
+                    <input type="text" class="form-control" id="industry" formControlName="industry"
+                           [class.is-invalid]="isFieldInvalid(organizationForm, 'industry')">
+                    <div class="invalid-feedback" *ngIf="isFieldInvalid(organizationForm, 'industry')">
+                      {{ getFieldError(organizationForm, 'industry') }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- نمایش وضعیت فعلی -->
+          <div class="alert alert-info">
+            <small>
+              <strong>وضعیت فعلی:</strong>
+              مشتری
+              <span class="badge"
+                    [class]="customerType === CustomerType.Individual ? 'bg-success' : 'bg-primary'">
+                {{ customerType === CustomerType.Individual ? 'حقیقی' : 'حقوقی' }}
+              </span>
+            </small>
+          </div>
+
+          <!-- دکمه‌های اقدام -->
+          <div class="row mt-4">
+            <div class="col-12">
+              <div class="d-flex gap-2 justify-content-end">
+                <button type="button" class="btn btn-secondary" (click)="router.navigate(['/customers'])">
+                  <i class="fas fa-times"></i> انصراف
+                </button>
+                <button type="submit" class="btn btn-primary" [disabled]="loading">
+                  <span *ngIf="loading" class="spinner-border spinner-border-sm me-2"></span>
+                  <i class="fas fa-save" *ngIf="!loading"></i>
+                  {{ loading ? 'در حال ایجاد...' : 'ایجاد مشتری' }}
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

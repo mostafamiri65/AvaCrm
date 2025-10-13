@@ -1,0 +1,142 @@
+<!-- partial:../../partials/_sidebar.html -->
+<nav class="sidebar">
+  <div class="sidebar-header">
+    <a href="#" class="sidebar-brand">
+      Ava<span>CRM</span>
+    </a>
+    <div class="sidebar-toggler not-active">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+  <div class="sidebar-body">
+    <ul class="nav">
+      <li class="nav-item nav-category">اصلی</li>
+      <li class="nav-item">
+        <a routerLink="/home" class="nav-link">
+          <i class="link-icon" data-feather="box"></i>
+          <span class="link-title">داشبورد</span>
+        </a>
+      </li>
+      <li class="nav-item nav-category">تنظیمات برنامه</li>
+      <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="collapse" href="#countries" role="button" aria-expanded="false"
+           aria-controls="countries">
+          <i class="link-icon" data-feather="mail"></i>
+          <span class="link-title">کشور و استان ها</span>
+          <i class="link-arrow" data-feather="chevron-down"></i>
+        </a>
+        <div class="collapse" id="countries">
+          <ul class="nav sub-menu">
+            <li class="nav-item">
+              <a routerLink="/countries" class="nav-link">کشورها</a>
+            </li>
+
+          </ul>
+        </div>
+      </li>
+      <li class="nav-item">
+        <a routerLink="/tags" class="nav-link">
+          <i class="link-icon" data-feather="message-square"></i>
+          <span class="link-title">تگ ها</span>
+        </a>
+      </li>
+<!--      <li class="nav-item">-->
+<!--        <a href="../apps/calendar.html" class="nav-link">-->
+<!--          <i class="link-icon" data-feather="calendar"></i>-->
+<!--          <span class="link-title">تقویم رویداد میلادی</span>-->
+<!--        </a>-->
+<!--      </li>-->
+<!--      <li class="nav-item">-->
+<!--        <a href="../apps/calendar-jalali.html" class="nav-link">-->
+<!--          <i class="link-icon" data-feather="calendar"></i>-->
+<!--          <span class="link-title">تقویم رویداد شمسی</span>-->
+<!--        </a>-->
+<!--      </li>-->
+      <li class="nav-item nav-category">مدیریت مشتری ها</li>
+      <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="collapse" href="#uiComponents" role="button" aria-expanded="false"
+           aria-controls="uiComponents">
+          <i class="link-icon" data-feather="feather"></i>
+          <span class="link-title">مشتریان</span>
+          <i class="link-arrow" data-feather="chevron-down"></i>
+        </a>
+        <div class="collapse" id="uiComponents">
+          <ul class="nav sub-menu">
+            <li class="nav-item">
+              <a routerLink="/customers" class="nav-link">مشتری</a>
+            </li>
+<!--            <li class="nav-item">-->
+<!--              <a href="../ui-components/alerts.html" class="nav-link">هشدار ها</a>-->
+<!--            </li>-->
+<!--            <li class="nav-item">-->
+<!--              <a href="../ui-components/badges.html" class="nav-link">نشان ها</a>-->
+<!--            </li>-->
+<!--            <li class="nav-item">-->
+<!--              <a href="../ui-components/breadcrumbs.html" class="nav-link">مسیر راهنما</a>-->
+<!--            </li>-->
+<!--            <li class="nav-item">-->
+<!--              <a href="../ui-components/buttons.html" class="nav-link">دکمه ها</a>-->
+<!--            </li>-->
+<!--            <li class="nav-item">-->
+<!--              <a href="../ui-components/button-group.html" class="nav-link">دکمه های گروهی</a>-->
+<!--            </li>-->
+<!--            <li class="nav-item">-->
+<!--              <a href="../ui-components/cards.html" class="nav-link">کارت ها</a>-->
+<!--            </li>-->
+<!--            <li class="nav-item">-->
+<!--              <a href="../ui-components/carousel.html" class="nav-link">اسلاید تصاویر</a>-->
+<!--            </li>-->
+<!--            <li class="nav-item">-->
+<!--              <a href="../ui-components/collapse.html" class="nav-link">کامپوننت Collapse</a>-->
+<!--            </li>-->
+<!--            <li class="nav-item">-->
+<!--              <a href="../ui-components/dropdowns.html" class="nav-link">فهرست کشویی</a>-->
+<!--            </li>-->
+<!--            <li class="nav-item">-->
+<!--              <a href="../ui-components/list-group.html" class="nav-link">لیست گروهی</a>-->
+<!--            </li>-->
+<!--            <li class="nav-item">-->
+<!--              <a href="../ui-components/media-object.html" class="nav-link">اشیاء رسانه ای</a>-->
+<!--            </li>-->
+<!--            <li class="nav-item">-->
+<!--              <a href="../ui-components/modal.html" class="nav-link">مُدال</a>-->
+<!--            </li>-->
+<!--            <li class="nav-item">-->
+<!--              <a href="../ui-components/navs.html" class="nav-link">نَو ها</a>-->
+<!--            </li>-->
+<!--            <li class="nav-item">-->
+<!--              <a href="../ui-components/navbar.html" class="nav-link">نوبار</a>-->
+<!--            </li>-->
+<!--            <li class="nav-item">-->
+<!--              <a href="../ui-components/pagination.html" class="nav-link">صفحه بندی</a>-->
+<!--            </li>-->
+<!--            <li class="nav-item">-->
+<!--              <a href="../ui-components/popover.html" class="nav-link">پاپ آور</a>-->
+<!--            </li>-->
+<!--            <li class="nav-item">-->
+<!--              <a href="../ui-components/progress.html" class="nav-link">نوار پیشرفت</a>-->
+<!--            </li>-->
+<!--            <li class="nav-item">-->
+<!--              <a href="../ui-components/scrollbar.html" class="nav-link">اسکرول بار</a>-->
+<!--            </li>-->
+<!--            <li class="nav-item">-->
+<!--              <a href="../ui-components/scrollspy.html" class="nav-link">پیمایش صفحه Scrollspy</a>-->
+<!--            </li>-->
+<!--            <li class="nav-item">-->
+<!--              <a href="../ui-components/spinners.html" class="nav-link">اسپینر</a>-->
+<!--            </li>-->
+<!--            <li class="nav-item">-->
+<!--              <a href="../ui-components/tabs.html" class="nav-link">تب ها</a>-->
+<!--            </li>-->
+<!--            <li class="nav-item">-->
+<!--              <a href="../ui-components/tooltips.html" class="nav-link">تولتیپ</a>-->
+<!--            </li>-->
+          </ul>
+        </div>
+      </li>
+
+    </ul>
+  </div>
+</nav>

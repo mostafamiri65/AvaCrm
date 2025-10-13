@@ -1,0 +1,121 @@
+<!-- components/contact-person-list/contact-person-list.component.html -->
+<div class="mb-4">
+  <!-- فرم فرد ارتباطی -->
+  @if (showContactPersonForm) {
+    <div class="mb-4">
+      <app-contact-person-form
+        [customerId]="customerId"
+        [contactPersonId]="editingContactPersonId"
+        (saved)="onContactPersonSaved()"
+        (cancelled)="onContactPersonCancelled()">
+      </app-contact-person-form>
+    </div>
+  }
+
+  <!-- لیست افراد ارتباطی -->
+  <div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h6 class="card-title mb-0">
+        <i class="fas fa-users me-2"></i>
+        افراد ارتباطی
+      </h6>
+      <button class="btn btn-sm btn-primary" (click)="openContactPersonForm()" [disabled]="showContactPersonForm">
+        <i class="fas fa-plus me-1"></i>
+        افزودن فرد ارتباطی
+      </button>
+    </div>
+
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-striped table-hover">
+          <thead>
+          <tr>
+            <th>نام کامل</th>
+            <th>سمت</th>
+            <th>تلفن</th>
+            <th>ایمیل</th>
+            <th width="120">عملیات</th>
+          </tr>
+          </thead>
+          <tbody>
+            @if (loading) {
+              <tr>
+                <td colspan="5" class="text-center py-4">
+                  <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                  </div>
+                  <div class="mt-2 text-muted">در حال بارگذاری افراد ارتباطی...</div>
+                </td>
+              </tr>
+            } @else {
+              @for (contactPerson of contactPersons; track contactPerson.id) {
+                <tr>
+                  <td>{{ contactPerson.fullName }}</td>
+                  <td>{{ contactPerson.jobTitle }}</td>
+                  <td>{{ contactPerson.phoneNumber }}</td>
+                  <td>{{ contactPerson.email }}</td>
+                  <td>
+                    <div class="btn-group btn-group-sm">
+                      <button class="btn btn-outline-primary"
+                              (click)="editContactPerson(contactPerson)"
+                              title="ویرایش فرد ارتباطی"
+                              [disabled]="showContactPersonForm">
+                        <i class="fas fa-edit"></i>
+                      </button>
+                      <button class="btn btn-outline-danger"
+                              (click)="deleteContactPerson(contactPerson.id)"
+                              title="حذف فرد ارتباطی"
+                              [disabled]="showContactPersonForm">
+                        <i class="fas fa-trash"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              }
+
+              @if (contactPersons.length === 0) {
+                <tr>
+                  <td colspan="5" class="text-center py-4 text-muted">
+                    <i class="fas fa-users fa-2x mb-2 d-block"></i>
+                    هیچ فرد ارتباطی ثبت نشده است
+                  </td>
+                </tr>
+              }
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <!-- صفحه‌بندی -->
+      @if (totalCount > 0) {
+        <div class="d-flex justify-content-between align-items-center mt-3">
+          <div class="text-muted">
+            نمایش {{ contactPersons.length }} از {{ totalCount }} رکورد
+          </div>
+          <nav>
+            <ul class="pagination mb-0">
+              <li class="page-item" [class.disabled]="paginationRequest.pageNumber === 1">
+                <a class="page-link" (click)="onPageChange(paginationRequest.pageNumber - 1)">
+                  قبلی
+                </a>
+              </li>
+
+              @for (page of getPageNumbers(); track page) {
+                <li class="page-item" [class.active]="paginationRequest.pageNumber === page">
+                  <a class="page-link" (click)="onPageChange(page)">{{ page }}</a>
+                </li>
+              }
+
+              <li class="page-item"
+                  [class.disabled]="paginationRequest.pageNumber * paginationRequest.pageSize >= totalCount">
+                <a class="page-link" (click)="onPageChange(paginationRequest.pageNumber + 1)">
+                  بعدی
+                </a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      }
+    </div>
+  </div>
+</div>

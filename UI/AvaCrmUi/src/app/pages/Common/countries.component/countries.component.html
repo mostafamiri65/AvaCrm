@@ -1,0 +1,178 @@
+
+  <div class="page-content iranSans">
+    <div class="container-fluid">
+
+      <!-- هدر صفحه -->
+      <div class="row">
+        <div class="col-12">
+          <div class="page-title-box d-flex align-items-center justify-content-between">
+            <h4 class="mb-0">مدیریت کشورها</h4>
+            <button class="btn btn-primary" (click)="openAddModal()">
+              <i class="fas fa-plus me-2"></i>
+              افزودن کشور جدید
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- پیام‌ها -->
+      <div class="row mt-3">
+        <div class="col-12">
+          <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show">
+            {{ successMessage }}
+            <button type="button" class="btn-close" (click)="clearMessages()"></button>
+          </div>
+          <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show">
+            {{ errorMessage }}
+            <button type="button" class="btn-close" (click)="clearMessages()"></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- جدول کشورها -->
+      <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-hover table-striped">
+                  <thead class="table-light">
+                  <tr>
+                    <th>#</th>
+                    <th>نام کشور</th>
+                    <th>عملیات</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr *ngIf="isLoading">
+                    <td colspan="3" class="text-center">
+                      <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">در حال بارگذاری...</span>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr *ngFor="let country of countries; let i = index" class="animate__animated animate__fadeIn">
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ country.name }}</td>
+                    <td>
+                      <div class="btn-group btn-group-sm">
+                        <button class="btn btn-outline-info btn-sm"
+                                (click)="showProvinces(country)"
+                                title="مشاهده استان‌ها">
+                          <i class="fas fa-map-marker-alt"></i>
+                        </button>
+                        <button class="btn btn-outline-warning"
+                                (click)="openEditModal(country)"
+                                title="ویرایش">
+                          <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-outline-danger"
+                                (click)="openDeleteModal(country)"
+                                title="حذف">
+                          <i class="fas fa-trash"></i>
+                        </button>
+
+                      </div>
+                    </td>
+                  </tr>
+                  <tr *ngIf="countries.length === 0 && !isLoading">
+                    <td colspan="3" class="text-center text-muted">
+                      هیچ کشوری یافت نشد
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- مودال اضافه کردن کشور -->
+  <div class="modal fade show" [class.show]="showAddModal" style="display: block;" *ngIf="showAddModal">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">افزودن کشور جدید</h5>
+          <button type="button" class="btn-close" (click)="closeModals()"></button>
+        </div>
+        <div class="modal-body">
+          <form (submit)="addCountry()">
+            <div class="mb-3">
+              <label for="countryName" class="form-label">نام کشور</label>
+              <input type="text" class="form-control" id="countryName"
+                     [(ngModel)]="newCountry.name" name="name"
+                     placeholder="نام کشور را وارد کنید" required>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeModals()">انصراف</button>
+          <button type="button" class="btn btn-primary"
+                  (click)="addCountry()"
+                  [disabled]="isLoading || !newCountry.name.trim()">
+            {{ isLoading ? 'در حال ذخیره...' : 'ذخیره' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-backdrop fade show" *ngIf="showAddModal"></div>
+
+  <!-- مودال ویرایش کشور -->
+  <div class="modal fade show" [class.show]="showEditModal" style="display: block;" *ngIf="showEditModal">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">ویرایش کشور</h5>
+          <button type="button" class="btn-close" (click)="closeModals()"></button>
+        </div>
+        <div class="modal-body">
+          <form (submit)="updateCountry()">
+            <div class="mb-3">
+              <label for="editCountryName" class="form-label">نام کشور</label>
+              <input type="text" class="form-control" id="editCountryName"
+                     [(ngModel)]="updatedCountry.name" name="name"
+                     placeholder="نام کشور را وارد کنید" required>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeModals()">انصراف</button>
+          <button type="button" class="btn btn-warning"
+                  (click)="updateCountry()"
+                  [disabled]="isLoading || !updatedCountry.name.trim()">
+            {{ isLoading ? 'در حال ویرایش...' : 'ویرایش' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-backdrop fade show" *ngIf="showEditModal"></div>
+
+  <!-- مودال حذف کشور -->
+  <div class="modal fade show" [class.show]="showDeleteModal" style="display: block;" *ngIf="showDeleteModal">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">تأیید حذف</h5>
+          <button type="button" class="btn-close" (click)="closeModals()"></button>
+        </div>
+        <div class="modal-body">
+          <p>آیا از حذف کشور "{{ countryToDelete.name }}" مطمئن هستید؟</p>
+          <p class="text-danger">این عمل قابل بازگشت نیست!</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeModals()">انصراف</button>
+          <button type="button" class="btn btn-danger"
+                  (click)="deleteCountry()"
+                  [disabled]="isLoading">
+            {{ isLoading ? 'در حال حذف...' : 'حذف' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-backdrop fade show" *ngIf="showDeleteModal"></div>

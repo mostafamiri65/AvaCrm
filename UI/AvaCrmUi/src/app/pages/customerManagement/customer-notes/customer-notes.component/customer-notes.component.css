@@ -1,0 +1,14 @@
+/* customer-notes.component.css */
+.note-item {
+  background-color: #f8f9fa;
+  border-left: 4px solid #007bff !important;
+}
+
+.note-item:hover {
+  background-color: #e9ecef;
+}
+
+textarea.form-control {
+  resize: vertical;
+  min-height: 100px;
+}

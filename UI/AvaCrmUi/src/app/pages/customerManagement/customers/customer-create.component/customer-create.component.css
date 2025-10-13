@@ -1,0 +1,48 @@
+/* components/customer-create/customer-create.component.css */
+.card {
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  border: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.card-header {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.form-label {
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.invalid-feedback {
+  display: block;
+}
+
+.border {
+  border-color: #dee2e6 !important;
+}
+
+.text-primary {
+  color: #0d6efd !important;
+}
+
+.btn {
+  border-radius: 0.375rem;
+}
+
+.form-control, .form-select {
+  border-radius: 0.375rem;
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: #86b7fe;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.spinner-border-sm {
+  width: 1rem;
+  height: 1rem;
+}
+.iranSans{
+  font-family: iransans, sans-serif;
+}

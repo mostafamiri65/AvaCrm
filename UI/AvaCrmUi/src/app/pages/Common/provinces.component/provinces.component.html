@@ -1,0 +1,182 @@
+<div class="provinces-container mt-4">
+
+  <!-- هدر استان‌ها -->
+  <div class="row">
+    <div class="col-12">
+      <div class="d-flex align-items-center justify-content-between mb-3">
+        <h5 class="mb-0">
+          <i class="fas fa-map-marker-alt me-2 text-primary"></i>
+          استان‌های {{ countryName }}
+        </h5>
+        <button class="btn btn-success btn-sm" (click)="openAddModal()">
+          <i class="fas fa-plus me-1"></i>
+          افزودن استان
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- پیام‌ها -->
+  <div class="row">
+    <div class="col-12">
+      <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show">
+        {{ successMessage }}
+        <button type="button" class="btn-close" (click)="clearMessages()"></button>
+      </div>
+      <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show">
+        {{ errorMessage }}
+        <button type="button" class="btn-close" (click)="clearMessages()"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- جدول استان‌ها -->
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-hover table-sm">
+              <thead class="table-light">
+              <tr>
+                <th width="50">#</th>
+                <th>نام استان</th>
+                <th width="120">عملیات</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngIf="isLoading">
+                <td colspan="3" class="text-center py-3">
+                  <div class="spinner-border spinner-border-sm text-primary" role="status">
+                    <span class="visually-hidden">در حال بارگذاری...</span>
+                  </div>
+                  <span class="me-2">در حال بارگذاری...</span>
+                </td>
+              </tr>
+              <tr *ngFor="let province of provinces; let i = index">
+                <td>{{ i + 1 }}</td>
+                <td>{{ province.name }}</td>
+                <td>
+                  <div class="btn-group btn-group-sm">
+                    <button class="btn btn-outline-warning btn-sm"
+                            (click)="openEditModal(province)"
+                            title="ویرایش">
+                      <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn btn-outline-danger btn-sm"
+                            (click)="openDeleteModal(province)"
+                            title="حذف">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr *ngIf="provinces.length === 0 && !isLoading">
+                <td colspan="3" class="text-center text-muted py-3">
+                  هیچ استانی برای این کشور یافت نشد
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- مودال اضافه کردن استان -->
+  <div class="modal fade show" [class.show]="showAddModal" style="display: block;" *ngIf="showAddModal">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">افزودن استان جدید</h5>
+          <button type="button" class="btn-close" (click)="closeModals()"></button>
+        </div>
+        <div class="modal-body">
+          <form (submit)="addProvince()">
+            <div class="mb-3">
+              <label class="form-label">کشور</label>
+              <input type="text" class="form-control" [value]="countryName" disabled>
+            </div>
+            <div class="mb-3">
+              <label for="provinceName" class="form-label">نام استان</label>
+              <input type="text" class="form-control" id="provinceName"
+                     [(ngModel)]="newProvince.name" name="name"
+                     placeholder="نام استان را وارد کنید" required>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeModals()">انصراف</button>
+          <button type="button" class="btn btn-primary"
+                  (click)="addProvince()"
+                  [disabled]="isLoading || !newProvince.name.trim()">
+            {{ isLoading ? 'در حال ذخیره...' : 'ذخیره' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-backdrop fade show" *ngIf="showAddModal"></div>
+
+  <!-- مودال ویرایش استان -->
+  <div class="modal fade show" [class.show]="showEditModal" style="display: block;" *ngIf="showEditModal">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">ویرایش استان</h5>
+          <button type="button" class="btn-close" (click)="closeModals()"></button>
+        </div>
+        <div class="modal-body">
+          <form (submit)="updateProvince()">
+            <div class="mb-3">
+              <label class="form-label">کشور</label>
+              <input type="text" class="form-control" [value]="countryName" disabled>
+            </div>
+            <div class="mb-3">
+              <label for="editProvinceName" class="form-label">نام استان</label>
+              <input type="text" class="form-control" id="editProvinceName"
+                     [(ngModel)]="updatedProvince.name" name="name"
+                     placeholder="نام استان را وارد کنید" required>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeModals()">انصراف</button>
+          <button type="button" class="btn btn-warning"
+                  (click)="updateProvince()"
+                  [disabled]="isLoading || !updatedProvince.name.trim()">
+            {{ isLoading ? 'در حال ویرایش...' : 'ویرایش' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-backdrop fade show" *ngIf="showEditModal"></div>
+
+  <!-- مودال حذف استان -->
+  <div class="modal fade show" [class.show]="showDeleteModal" style="display: block;" *ngIf="showDeleteModal">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">تأیید حذف</h5>
+          <button type="button" class="btn-close" (click)="closeModals()"></button>
+        </div>
+        <div class="modal-body">
+          <p>آیا از حذف استان "{{ provinceToDelete.name }}" مطمئن هستید؟</p>
+          <p class="text-danger">این عمل قابل بازگشت نیست!</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeModals()">انصراف</button>
+          <button type="button" class="btn btn-danger"
+                  (click)="deleteProvince()"
+                  [disabled]="isLoading">
+            {{ isLoading ? 'در حال حذف...' : 'حذف' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-backdrop fade show" *ngIf="showDeleteModal"></div>
+
+</div>

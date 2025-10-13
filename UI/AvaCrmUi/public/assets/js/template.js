@@ -7,7 +7,7 @@
     var footer = $('footer');
     var sidebar = $('.sidebar');
     var navbar = $('.navbar').not('.top-navbar');
-    
+
 
     // Enable feather-icons with SVG markup
     feather.replace();
@@ -45,7 +45,7 @@
     })
 
 
-    // Applying perfect-scrollbar 
+    // Applying perfect-scrollbar
     if ($('.sidebar .sidebar-body').length) {
       const sidebarBodyScroll = new PerfectScrollbar('.sidebar-body');
     }
@@ -155,7 +155,7 @@
     });
 
 
-    // close sidebar when click outside on mobile/table    
+    // close sidebar when click outside on mobile/table
     $(document).on('click touchstart', function(e){
       e.stopPropagation();
 
@@ -184,7 +184,7 @@
           navItemClicked.removeClass('show-submenu');
         }
         $(this).toggleClass('show-submenu');
-      }        
+      }
     })
 
     $(window).scroll(function() {
@@ -198,11 +198,11 @@
       }
     });
 
-    // tarikh
-    $(".tarikh").persianDatepicker({
-      format: "YYYY/MM/DD",
-      autoclose: true
-    });
+    // // tarikh
+    // $(".tarikh").persianDatepicker({
+    //   format: "YYYY/MM/DD",
+    //   autoclose: true
+    // });
 
 
     // Prevent body scrolling while sidebar scroll
@@ -211,7 +211,7 @@
     // }, function () {
     //   $('body').removeClass('overflow-hidden');
     // });
-   
+
 
   });
 })(jQuery);

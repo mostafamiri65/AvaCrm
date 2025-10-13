@@ -1,0 +1,142 @@
+<!-- customer-notes.component.html -->
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h4>مدیریت یادداشت‌های مشتری</h4>
+    <button class="btn btn-secondary" (click)="backToCustomers()">
+      <i class="fas fa-arrow-right"></i> بازگشت به لیست مشتریان
+    </button>
+  </div>
+  <!-- کارت اطلاعات مشتری -->
+  <div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+      <h5 class="mb-0">
+        <i class="fas fa-user me-2"></i>
+        اطلاعات مشتری
+      </h5>
+    </div>
+    <div class="card-body">
+      <div *ngIf="customerLoading" class="text-center">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+
+      <div *ngIf="!customerLoading && customer" class="row">
+        <div class="col-md-3">
+          <strong>کد مشتری:</strong>
+          <span class="badge bg-secondary me-2">{{ customer.code }}</span>
+        </div>
+
+        <div class="col-md-3">
+          <strong>نام:</strong>
+          {{ getCustomerName() }}
+        </div>
+
+
+        <div class="col-md-9 mt-2">
+          <strong>تعداد یادداشت‌ها:</strong>
+          <span class="badge bg-info">{{ notes.length }}</span>
+        </div>
+      </div>
+
+      <div *ngIf="!customerLoading && !customer" class="text-center text-muted">
+        <i class="fas fa-exclamation-triangle me-2"></i>
+        اطلاعات مشتری یافت نشد
+      </div>
+    </div>
+  </div>
+
+  <!-- دکمه افزودن یادداشت جدید -->
+  <div class="mb-3">
+    <button class="btn btn-success" (click)="startAddNote()" [disabled]="isAdding || isEditing">
+      <i class="fas fa-plus"></i> یادداشت جدید
+    </button>
+  </div>
+
+  <!-- فرم افزودن یادداشت جدید -->
+  <div *ngIf="isAdding" class="card mb-4">
+    <div class="card-header bg-success text-white">
+      <h5 class="mb-0">یادداشت جدید</h5>
+    </div>
+    <div class="card-body">
+      <div class="mb-3">
+        <label class="form-label">متن یادداشت</label>
+        <textarea class="form-control"
+                  [(ngModel)]="newNote.content"
+                  rows="4"
+                  placeholder="متن یادداشت خود را وارد کنید..."></textarea>
+      </div>
+      <div class="d-flex gap-2">
+        <button class="btn btn-success" (click)="saveNewNote()" [disabled]="!newNote.content.trim()">
+          <i class="fas fa-save"></i> ذخیره
+        </button>
+        <button class="btn btn-secondary" (click)="cancelAdd()">
+          <i class="fas fa-times"></i> لغو
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- لیست یادداشت‌ها -->
+  <div class="card">
+    <div class="card-header">
+      <h5 class="mb-0">یادداشت‌های ثبت شده</h5>
+    </div>
+    <div class="card-body">
+      <div *ngIf="loading" class="text-center py-3">
+        <div class="spinner-border" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+
+      <div *ngIf="!loading && notes.length === 0" class="text-center text-muted py-4">
+        <i class="fas fa-sticky-note fa-3x mb-3"></i>
+        <p>هیچ یادداشتی برای این مشتری ثبت نشده است</p>
+      </div>
+
+      <div *ngFor="let note of notes" class="note-item mb-4 p-3 border rounded">
+        <!-- حالت نمایش -->
+        <div *ngIf="!isEditing || editingNote.id !== note.id">
+          <div class="d-flex justify-content-between align-items-start mb-2">
+            <small class="text-muted">
+              <i class="fas fa-calendar"></i>
+              {{ formatDate(note.createdDate) }}
+            </small>
+            <div class="btn-group btn-group-sm">
+              <button class="btn btn-outline-primary btn-sm"
+                      (click)="startEditNote(note)"
+                      title="ویرایش">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button class="btn btn-outline-danger btn-sm"
+                      (click)="deleteNote(note.id)"
+                      title="حذف">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </div>
+          <p class="mb-0" style="white-space: pre-line">{{ note.content }}</p>
+        </div>
+
+        <!-- حالت ویرایش -->
+        <div *ngIf="isEditing && editingNote.id === note.id">
+          <div class="mb-3">
+            <textarea class="form-control"
+                      [(ngModel)]="editingNote.content"
+                      rows="4"></textarea>
+          </div>
+          <div class="d-flex gap-2">
+            <button class="btn btn-success btn-sm"
+                    (click)="saveEdit()"
+                    [disabled]="!editingNote.content.trim()">
+              <i class="fas fa-save"></i> ذخیره
+            </button>
+            <button class="btn btn-secondary btn-sm" (click)="cancelEdit()">
+              <i class="fas fa-times"></i> لغو
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

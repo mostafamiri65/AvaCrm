@@ -17,21 +17,28 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEnt
 	{
 		_context = context;
 	}
-	public async Task<TEntity> Create(TEntity entity, bool saveNow = true)
-	{
+	public async Task<TEntity> Create(TEntity entity,long userId, bool saveNow = true)
+    {
+        entity.CreatedBy = userId;
+		entity.ModifiedBy = userId;
+		entity.CreationDate = DateTime.Now;
+		entity.ModifiedDate = DateTime.Now;
 		await _context.AddAsync(entity);
 		if (saveNow) await _context.SaveChangesAsync();
 		return entity;
 	}
 
-	public async Task Delete(long entityId)
+	public async Task Delete(long entityId, long userId)
 	{
 		var entity = await _context.Set<TEntity>().FirstOrDefaultAsync(e=>e.Id == entityId);
 		if (entity!= null)
 		{
 			entity.IsDelete = true;
+            entity.ModifiedBy = userId;
+            entity.ModifiedDate = DateTime.Now;
 			_context.Update(entity);
-		}
+            await _context.SaveChangesAsync();
+        }
 	}
 
 	public  IQueryable<TEntity> GetAll(bool asNoTracking = true)
@@ -45,8 +52,10 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEnt
 		return await _context.Set<TEntity>().FindAsync(new object?[] { entityId }, cancellationToken);
 	}
 
-	public async Task Update(TEntity entity, CancellationToken cancellationToken = default)
+	public async Task Update(TEntity entity,long userId, CancellationToken cancellationToken = default)
 	{
+        entity.ModifiedBy = userId;
+        entity.ModifiedDate = DateTime.Now;
 		_context.Set<TEntity>().Update(entity);
 		await _context.SaveChangesAsync(cancellationToken);
 	}

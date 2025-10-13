@@ -1,6 +1,8 @@
-﻿using AvaCrm.Application.Models.Identity;
+﻿using AvaCrm.Application.DTOs.Accounts;
+using AvaCrm.Application.Models.Identity;
 using AvaCrm.Application.Rules.Enums;
 using AvaCrm.Domain.Entities.Accounts;
+using MediatR;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -18,6 +20,38 @@ public class AuthService : IAuthService
 		_userRepository = userRepository;
 		_hashingService = hashingService;
 		_jwtSettings = jwtSettings;
+	}
+
+	public async Task<AuthResponse?> GetUserForLogin(string username, string password)
+	{
+		AuthResponse response = new AuthResponse();
+		var user = await _userRepository.GetUserByUsername(username);
+		if (user == null)
+		{
+			response.LoginState = LoginState.InvalidCredentials;
+		}
+		else if (user.TwoFactorEnabled)
+		{
+			response.LoginState = LoginState.RequiresTwoFactor;
+		}
+		else if (user.LockoutEnd > DateTimeOffset.Now)
+		{
+			response.LoginState = LoginState.TempararyLockedOut;
+		}
+		else if (user.LockoutEnabled)
+		{
+			response.LoginState = LoginState.LockedOut;
+		}
+		else if (user.PasswordHash != null &&
+			!_hashingService.Verify(password, user.PasswordHash))
+		{
+			response.LoginState = LoginState.InvalidCredentials;
+		}
+		else
+		{ 
+		
+		}
+		return response;
 	}
 
 	public async Task<AuthResponse> Login(AuthRequest request)
@@ -47,18 +81,30 @@ public class AuthService : IAuthService
 		}
 		else
 		{
-			JwtSecurityToken jwtSecurityToken = await GenerateToken(user);
+			var userdto = new UserDto
+			{
+				UserId = user.Id,
+				RoleId = user.RoleId,
+				Email = user.Email,
+				AvatarFile = user.UserInfo != null ?
+						user.UserInfo.Avatar :string.Empty,
+				Fullname = user.UserInfo?.FirstName + " " + user.UserInfo?.LastName,
+				PhoneNumber = user.PhoneNumber,
+				UserGender = user.UserInfo != null ?
+						user.UserInfo.UserGender : Domain.Enums.Accounts.UserGender.Male,
+				UserName = user.Username
+			};
+
+			JwtSecurityToken jwtSecurityToken = GenerateToken(user);
 			response.LoginState = LoginState.Success;
-			response.Id = user.Id;
+			response.User = userdto;
 			response.Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
-			response.Email = user.Email;
-			response.UserName = user.Username;
-			response.PhoneNumber = user.PhoneNumber;
+			
 		}
 
 		return response;
 	}
-	private async Task<JwtSecurityToken> GenerateToken(User user)
+	private JwtSecurityToken GenerateToken(User user)
 	{
 		var displayName = !string.IsNullOrWhiteSpace(user.Username)
 			? user.Username : !string.IsNullOrWhiteSpace(user.Email)

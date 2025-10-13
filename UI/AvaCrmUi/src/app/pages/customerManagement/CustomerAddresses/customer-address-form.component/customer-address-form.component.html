@@ -1,0 +1,121 @@
+<!-- components/customer-address-form/customer-address-form.component.html -->
+<div class="card">
+  <div class="card-header">
+    <h6 class="card-title mb-0">
+      <i class="fas fa-map-marker-alt me-2"></i>
+      {{ addressId ? 'ویرایش آدرس' : 'ایجاد آدرس جدید' }}
+    </h6>
+  </div>
+
+  <div class="card-body">
+    <!-- نمایش customerId برای دیباگ -->
+    <div class="alert alert-info mb-3" *ngIf="customerId">
+      <small>
+        <strong>Customer ID:</strong> {{ customerId }}
+      </small>
+    </div>
+
+    <form [formGroup]="addressForm" (ngSubmit)="onSubmit()">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="countryId" class="form-label">کشور *</label>
+            <select class="form-select" id="countryId" formControlName="countryId"
+                    [class.is-invalid]="isFieldInvalid('countryId')">
+              <option value="">انتخاب کشور</option>
+              <option *ngFor="let country of countries" [value]="country.id">
+                {{ country.name }}
+              </option>
+            </select>
+            <div class="invalid-feedback" *ngIf="isFieldInvalid('countryId')">
+              {{ getFieldError('countryId') }}
+            </div>
+            <div *ngIf="loadingCountries" class="text-primary mt-1">
+              <small class="text-muted">
+                <i class="fas fa-spinner fa-spin me-1"></i>
+                در حال بارگذاری کشورها...
+              </small>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="provinceId" class="form-label">استان *</label>
+            <select class="form-select" id="provinceId" formControlName="provinceId"
+                    [class.is-invalid]="isFieldInvalid('provinceId')"
+                    [disabled]="!addressForm.get('countryId')?.value || loadingProvinces">
+              <option value="">انتخاب استان</option>
+              <option *ngFor="let province of provinces" [value]="province.id">
+                {{ province.name }}
+              </option>
+            </select>
+            <div class="invalid-feedback" *ngIf="isFieldInvalid('provinceId')">
+              {{ getFieldError('provinceId') }}
+            </div>
+            <div *ngIf="loadingProvinces" class="text-primary mt-1">
+              <small class="text-muted">
+                <i class="fas fa-spinner fa-spin me-1"></i>
+                در حال بارگذاری استان‌ها...
+              </small>
+            </div>
+            <div *ngIf="addressForm.get('countryId')?.value && provinces.length === 0 && !loadingProvinces"
+                 class="text-warning mt-1">
+              <small>استانی برای این کشور یافت نشد</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="city" class="form-label">شهر *</label>
+            <input type="text" class="form-control" id="city" formControlName="city"
+                   placeholder="نام شهر را وارد کنید"
+                   [class.is-invalid]="isFieldInvalid('city')">
+            <div class="invalid-feedback" *ngIf="isFieldInvalid('city')">
+              {{ getFieldError('city') }}
+            </div>
+            <div class="form-text">نام شهر الزامی است</div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="street" class="form-label">خیابان *</label>
+            <input type="text" class="form-control" id="street" formControlName="street"
+                   placeholder="نام خیابان، بلوار، میدان و..."
+                   [class.is-invalid]="isFieldInvalid('street')">
+            <div class="invalid-feedback" *ngIf="isFieldInvalid('street')">
+              {{ getFieldError('street') }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-12">
+          <div class="mb-3">
+            <label for="additionalInfo" class="form-label">اطلاعات تکمیلی</label>
+            <textarea class="form-control" id="additionalInfo" formControlName="additionalInfo"
+                      rows="3" placeholder="پلاک، واحد، کد پستی، طبقه و..."></textarea>
+            <div class="form-text">حداکثر ۵۰۰ کاراکتر</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="d-flex gap-2 justify-content-end border-top pt-3">
+        <button type="button" class="btn btn-secondary" (click)="onCancel()" [disabled]="loading">
+          <i class="fas fa-times me-1"></i>
+          انصراف
+        </button>
+        <button type="submit" class="btn btn-primary" [disabled]="loading || addressForm.invalid">
+          <span *ngIf="loading" class="spinner-border spinner-border-sm me-2"></span>
+          <i class="fas" [class.fa-save]="!addressId" [class.fa-edit]="addressId" *ngIf="!loading"></i>
+          {{ addressId ? 'بروزرسانی آدرس' : 'ایجاد آدرس' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

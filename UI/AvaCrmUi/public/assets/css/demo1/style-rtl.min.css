@@ -26407,7 +26407,8 @@ div.tox .btn-icon-text.btn-lg.tox-button .btn-icon-prepend {
     width: 100%;
     height: 100%;
     background-image: url(../../images/photos/img6.jpg);
-    background-size: cover
+    background-size: cover;
+border-radius: 0px 15px 15px 0px;
 }
 
 .email-aside-nav.collapse {
