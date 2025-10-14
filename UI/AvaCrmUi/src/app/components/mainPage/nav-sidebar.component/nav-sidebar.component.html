@@ -37,6 +37,25 @@
         </div>
       </li>
       <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="collapse" href="#users" role="button" aria-expanded="false"
+           aria-controls="users">
+          <i class="link-icon" data-feather="mail"></i>
+          <span class="link-title">کاربری</span>
+          <i class="link-arrow" data-feather="chevron-down"></i>
+        </a>
+        <div class="collapse" id="users">
+          <ul class="nav sub-menu">
+            <li class="nav-item">
+              <a routerLink="/roles" class="nav-link">نقش ها</a>
+            </li>
+            <li class="nav-item">
+              <a routerLink="/users" class="nav-link">کاربران</a>
+            </li>
+
+          </ul>
+        </div>
+      </li>
+      <li class="nav-item">
         <a routerLink="/tags" class="nav-link">
           <i class="link-icon" data-feather="message-square"></i>
           <span class="link-title">تگ ها</span>

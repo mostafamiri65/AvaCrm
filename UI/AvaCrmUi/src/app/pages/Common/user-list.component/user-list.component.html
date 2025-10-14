@@ -1,0 +1,198 @@
+<!-- user-list.component.html -->
+<div class="container-fluid py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="text-primary">
+      <i class="fas fa-users me-2"></i>مدیریت کاربران
+    </h4>
+    <button class="btn btn-primary" (click)="startAddUser()" [disabled]="isAdding || isEditing">
+      <i class="fas fa-plus me-2"></i>کاربر جدید
+    </button>
+  </div>
+
+  <!-- فرم افزودن کاربر جدید -->
+  <div *ngIf="isAdding" class="card mb-4">
+    <div class="card-header bg-success text-white">
+      <h5 class="mb-0">کاربر جدید</h5>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label">نام کاربری *</label>
+          <input type="text" class="form-control" [(ngModel)]="newUser.username" required>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label">ایمیل *</label>
+          <input type="email" class="form-control" [(ngModel)]="newUser.email" required>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label">رمز عبور *</label>
+          <input type="password" class="form-control" [(ngModel)]="newUser.password" required>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label">تلفن</label>
+          <input type="text" class="form-control" [(ngModel)]="newUser.phoneNumber">
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label">نقش *</label>
+          <select class="form-select" [(ngModel)]="newUser.roleId" required>
+            <option value="0">انتخاب نقش</option>
+            <option *ngFor="let role of roles" [value]="role.id">
+              {{ role.titlePersian }}
+            </option>
+          </select>
+        </div>
+      </div>
+      <div class="d-flex gap-2">
+        <button class="btn btn-success" (click)="saveNewUser()"
+                [disabled]="!newUser.username?.trim() || !newUser.email?.trim() || !newUser.password?.trim() || !newUser.roleId">
+          <i class="fas fa-save me-2"></i>ذخیره
+        </button>
+        <button class="btn btn-secondary" (click)="cancelAdd()">
+          <i class="fas fa-times me-2"></i>لغو
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- فرم تغییر رمز عبور -->
+  <div *ngIf="isChangingPassword" class="card mb-4">
+    <div class="card-header bg-warning text-white">
+      <h5 class="mb-0">تغییر رمز عبور</h5>
+    </div>
+    <div class="card-body">
+      <div class="mb-3">
+        <label class="form-label">رمز عبور جدید *</label>
+        <input type="password" class="form-control" [(ngModel)]="changePasswordDto.newPassword" required>
+      </div>
+      <div class="d-flex gap-2">
+        <button class="btn btn-warning" (click)="savePassword()" [disabled]="!changePasswordDto.newPassword.trim()">
+          <i class="fas fa-key me-2"></i>تغییر رمز
+        </button>
+        <button class="btn btn-secondary" (click)="cancelChangePassword()">
+          <i class="fas fa-times me-2"></i>لغو
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- لیست کاربران -->
+  <div class="card">
+    <div class="card-header">
+      <h5 class="mb-0">لیست کاربران</h5>
+    </div>
+    <div class="card-body">
+      <div *ngIf="loading" class="text-center py-4">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+
+      <div *ngIf="!loading && users.length === 0" class="text-center text-muted py-4">
+        <i class="fas fa-users fa-3x mb-3"></i>
+        <p>هیچ کاربری ثبت نشده است</p>
+      </div>
+
+      <div class="table-responsive" *ngIf="!loading && users.length > 0">
+        <table class="table table-striped table-hover">
+          <thead>
+          <tr>
+            <th>نام کاربری</th>
+            <th>ایمیل</th>
+            <th>نقش</th>
+            <th>تلفن</th>
+            <th>وضعیت ایمیل</th>
+            <th>وضعیت قفل</th>
+            <th>تاریخ ایجاد</th>
+            <th>عملیات</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let user of users">
+            <!-- حالت نمایش -->
+            <td *ngIf="!isEditing || editingUser.id !== user.id">
+              <strong>{{ user.username }}</strong>
+            </td>
+            <td *ngIf="!isEditing || editingUser.id !== user.id">{{ user.email }}</td>
+            <td *ngIf="!isEditing || editingUser.id !== user.id">
+              <span class="badge bg-info">{{ user.roleTitlePersian }}</span>
+            </td>
+            <td *ngIf="!isEditing || editingUser.id !== user.id">{{ user.phoneNumber || '-' }}</td>
+            <td *ngIf="!isEditing || editingUser.id !== user.id">
+                <span [class]="getEmailVerificationBadgeClass(user)">
+                  {{ getEmailVerificationText(user) }}
+                </span>
+            </td>
+            <td *ngIf="!isEditing || editingUser.id !== user.id">
+                <span [class]="getLockoutBadgeClass(user)">
+                  {{ getLockoutText(user) }}
+                </span>
+            </td>
+            <td *ngIf="!isEditing || editingUser.id !== user.id">
+              {{ formatDate(user.createdDate) }}
+            </td>
+
+            <!-- حالت ویرایش -->
+            <td *ngIf="isEditing && editingUser.id === user.id">
+              <input type="text" class="form-control form-control-sm" [(ngModel)]="editingUser.username">
+            </td>
+            <td *ngIf="isEditing && editingUser.id === user.id">
+              <input type="email" class="form-control form-control-sm" [(ngModel)]="editingUser.email">
+            </td>
+            <td *ngIf="isEditing && editingUser.id === user.id">
+              <select class="form-select form-select-sm" [(ngModel)]="editingUser.roleId">
+                <option *ngFor="let role of roles" [value]="role.id">
+                  {{ role.titlePersian }}
+                </option>
+              </select>
+            </td>
+            <td *ngIf="isEditing && editingUser.id === user.id">
+              <input type="text" class="form-control form-control-sm" [(ngModel)]="editingUser.phoneNumber">
+            </td>
+            <td *ngIf="isEditing && editingUser.id === user.id">
+                <span [class]="getEmailVerificationBadgeClass(user)">
+                  {{ getEmailVerificationText(user) }}
+                </span>
+            </td>
+            <td *ngIf="isEditing && editingUser.id === user.id">
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" [(ngModel)]="editingUser.lockoutEnabled">
+              </div>
+            </td>
+            <td *ngIf="isEditing && editingUser.id === user.id">
+              {{ formatDate(user.createdDate) }}
+            </td>
+
+            <td>
+              <div class="btn-group btn-group-sm" *ngIf="!isEditing || editingUser.id !== user.id">
+                <button class="btn btn-outline-warning" (click)="startChangePassword(user.id)" title="تغییر رمز">
+                  <i class="fas fa-key"></i>
+                </button>
+                <button class="btn btn-outline-primary" (click)="startEditUser(user)" title="ویرایش">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn btn-outline-secondary" (click)="toggleLockout(user)"
+                        [title]="user.lockoutTotal ? 'آزاد کردن کاربر' : 'قفل کردن کاربر'">
+                  <i class="fas" [class.fa-lock-open]="user.lockoutTotal" [class.fa-lock]="!user.lockoutTotal"></i>
+                </button>
+                <button class="btn btn-outline-danger" (click)="deleteUser(user.id)" title="حذف">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </div>
+
+              <div class="btn-group btn-group-sm" *ngIf="isEditing && editingUser.id === user.id">
+                <button class="btn btn-success btn-sm" (click)="saveEdit()"
+                        [disabled]="!editingUser.username?.trim() || !editingUser.email?.trim()">
+                  <i class="fas fa-save"></i>
+                </button>
+                <button class="btn btn-secondary btn-sm" (click)="cancelEdit()">
+                  <i class="fas fa-times"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

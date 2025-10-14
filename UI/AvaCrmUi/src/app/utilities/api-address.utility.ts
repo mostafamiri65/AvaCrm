@@ -128,4 +128,15 @@ export class ApiAddressUtility {
   static upcomingActivities: string = "/Dashboard/upcoming-activities";
   static recentActivities: string = "/Dashboard/recent-activities";
 
+  // Users
+  static users: string = "/Users";
+  static userById: string = "/Users";
+  static userDetail: string = "/Users/detail";
+  static userChangePassword: string = "/Users/change-password";
+  static userToggleLockout: string = "/Users/toggle-lockout";
+
+  // Roles
+  static roles: string = "/Roles";
+  static roleById: string = "/Roles";
+
 }
