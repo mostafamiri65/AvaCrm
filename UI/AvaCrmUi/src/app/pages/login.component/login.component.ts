@@ -149,7 +149,7 @@ export class LoginComponent {
     } else if (error.status === 404) {
       this.errorMessage = 'سرویس ورود یافت نشد';
     } else if (error.status >= 500) {
-      this.errorMessage = 'خطای سرور. لطفا稍后 مجددا تلاش کنید';
+      this.errorMessage = 'خطای سرور. لطفا مجددا تلاش کنید';
     } else {
       this.errorMessage = 'خطای ناشناخته در ارتباط با سرور';
     }
