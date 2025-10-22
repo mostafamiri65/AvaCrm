@@ -1,4 +1,4 @@
-using AvaCrm.Application.Models.Identity;
+﻿using AvaCrm.Application.Models.Identity;
 using AvaCrm.Persistence;
 using Microsoft.Extensions.Options;
 using AvaCrm.Application;
@@ -45,10 +45,12 @@ builder.Services.AddCors(options =>
 	options.AddPolicy("AllowAngularApp",
 		policy =>
 		{
-			policy.WithOrigins("http://localhost:4200") // Your Angular app URL
-				  .AllowAnyHeader()
-				  .AllowAnyMethod()
-				  .AllowCredentials(); // If you're using cookies/auth
+
+			policy
+                .AllowAnyOrigin()   
+				.AllowAnyHeader()  
+				.AllowAnyMethod(); 
+
 		});
 });
 #endregion
@@ -59,12 +61,15 @@ builder.Services.AddOpenApi();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-	app.UseSwagger();
-	app.UseSwaggerUI();
-	app.MapOpenApi();
-}
+//if (app.Environment.IsDevelopment())
+//{
+//	app.UseSwagger();
+//	app.UseSwaggerUI();
+//	app.MapOpenApi();
+//}
+app.UseSwagger();
+app.UseSwaggerUI();
+app.MapOpenApi();
 app.UseCors("AllowAngularApp");
 app.UseHttpsRedirection();
 

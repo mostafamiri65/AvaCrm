@@ -3,7 +3,7 @@ import {CountryDto, CreateCountryDto, UpdateCountryDto} from '../../../dtos/Comm
 import {CountryService} from '../../../services/country.service';
 import {NgForOf, NgIf} from '@angular/common';
 import {FormsModule} from '@angular/forms';
-import {Route, Router, RouterLink} from '@angular/router';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-countries',
@@ -11,7 +11,6 @@ import {Route, Router, RouterLink} from '@angular/router';
     NgIf,
     FormsModule,
     NgForOf,
-    RouterLink
   ],
   templateUrl: './countries.component.html',
   styleUrl: './countries.component.css'
