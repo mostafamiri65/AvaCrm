@@ -1,5 +1,6 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
+using AvaCrm.Domain.Entities.ProjectManagement;
 
 namespace AvaCrm.Persistence.Data;
 
@@ -30,6 +31,13 @@ public class AvaCrmContext : DbContext
 	public virtual DbSet<Note> Notes { get; set; }
 	public virtual DbSet<OrganizationCustomer> OrganizationCustomers { get; set; }
 	public virtual DbSet<Tag> Tags { get; set; }
+	public virtual DbSet<Project> Projects { get; set; }
+	public virtual DbSet<TaskItem> TaskItems { get; set; }
+	public virtual DbSet<Comment> Comments { get; set; }
+	public virtual DbSet<Attachment> Attachments { get; set; }
+	public virtual DbSet<ActivityLog> ActivityLogs { get; set; }
+	public virtual DbSet<UserProject> UserProjects { get; set; }
+
 	#endregion
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
@@ -89,6 +97,8 @@ public class AvaCrmContext : DbContext
 			UserGender = Domain.Enums.Accounts.UserGender.Male
 		});
 		modelBuilder.Entity<Country>().HasData(new Country { Id = 1, Name = "ایران" });
+
+		modelBuilder.Entity<UserProject>().HasKey(e=> new {e.ProjectId, e.UserId});
 		#region Province
 		var provinces = new List<Province>
 		{

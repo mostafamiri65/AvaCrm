@@ -4,5 +4,6 @@
     {
         public string Action { get; set; } = string.Empty;
         public string? Details { get; set; }
+        public long ProjectId { get; set; }
     }
 }

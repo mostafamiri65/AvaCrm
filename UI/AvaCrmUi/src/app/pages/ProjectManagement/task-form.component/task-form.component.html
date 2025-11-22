@@ -1,0 +1,96 @@
+<!-- src/app/pages/ProjectManagement/task-form/task-form.component.html -->
+<div class="task-form-container">
+  <form [formGroup]="taskForm" (ngSubmit)="onSubmit()" class="task-form">
+    <div class="form-group">
+      <label for="title" class="form-label">عنوان تسک *</label>
+      <input
+        type="text"
+        id="title"
+        formControlName="title"
+        class="form-control"
+        placeholder="عنوان تسک را وارد کنید"
+        [class.is-invalid]="taskForm.get('title')?.touched && taskForm.get('title')?.invalid">
+      <div class="error-message" *ngIf="taskForm.get('title')?.touched && taskForm.get('title')?.invalid">
+        {{ getFieldError('title') }}
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="description" class="form-label">توضیحات</label>
+      <textarea
+        id="description"
+        formControlName="description"
+        rows="4"
+        class="form-control"
+        placeholder="توضیحات تسک (اختیاری)"></textarea>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="assignedTo" class="form-label">اختصاص به کاربر *</label>
+        <select
+          id="assignedTo"
+          formControlName="assignedTo"
+          class="form-control"
+          [class.is-invalid]="taskForm.get('assignedTo')?.touched && taskForm.get('assignedTo')?.invalid">
+          <option value="">انتخاب کاربر</option>
+          <option *ngFor="let user of users" [value]="user.id">
+            {{ user.username }} - {{ user.email }}
+          </option>
+        </select>
+        <div class="error-message" *ngIf="taskForm.get('assignedTo')?.touched && taskForm.get('assignedTo')?.invalid">
+          {{ getFieldError('assignedTo') }}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="priority" class="form-label">اولویت *</label>
+        <select
+          id="priority"
+          formControlName="priority"
+          class="form-control">
+          <option *ngFor="let priority of [taskPriority.Low, taskPriority.Medium, taskPriority.High, taskPriority.Critical]"
+                  [value]="priority">
+            {{ getPriorityText(priority) }}
+          </option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="status" class="form-label">وضعیت *</label>
+        <select
+          id="status"
+          formControlName="status"
+          class="form-control">
+          <option *ngFor="let status of [taskStatus.ToDo, taskStatus.InProgress, taskStatus.Done, taskStatus.Cancelled]"
+                  [value]="status">
+            {{ getStatusText(status) }}
+          </option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="dueDate" class="form-label">تاریخ مهلت (شمسی)</label>
+        <input
+          type="text"
+          id="dueDate"
+          formControlName="dueDate"
+          class="form-control"
+          placeholder="1403-01-01">
+        <small class="form-text">فرمت: سال-ماه-روز (مثال: 1403-01-01)</small>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" (click)="onCancel()" class="btn btn-secondary" [disabled]="submitting">
+        لغو
+      </button>
+      <button type="submit" [disabled]="submitting || taskForm.invalid" class="btn btn-primary">
+        <span *ngIf="submitting" class="spinner-border spinner-border-sm me-2"></span>
+        {{ isEditMode ? 'بروزرسانی تسک' : 'ایجاد تسک' }}
+      </button>
+    </div>
+  </form>
+</div>

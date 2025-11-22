@@ -1,0 +1,69 @@
+<form [formGroup]="projectForm" (ngSubmit)="onSubmit()">
+  <div class="form-row">
+    <div class="form-group">
+      <label for="title">عنوان پروژه *</label>
+      <input type="text" id="title" formControlName="title" class="form-control">
+      <div class="error-message" *ngIf="projectForm.get('title')?.touched && projectForm.get('title')?.errors">
+        <span *ngIf="projectForm.get('title')?.errors?.['required']">عنوان پروژه الزامی است</span>
+        <span *ngIf="projectForm.get('title')?.errors?.['minlength']">عنوان باید حداقل ۳ کاراکتر باشد</span>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="startDate">تاریخ شروع (شمسی) *</label>
+      <input type="text" id="startDate" formControlName="startDate" class="form-control" placeholder="1403-01-01">
+      <small class="form-text text-muted">فرمت: سال-ماه-روز (مثال: 1403-01-01)</small>
+      <div class="error-message" *ngIf="projectForm.get('startDate')?.touched && projectForm.get('startDate')?.errors?.['required']">
+        تاریخ شروع الزامی است
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="description">توضیحات *</label>
+    <textarea id="description" formControlName="description" rows="4" class="form-control"></textarea>
+    <div class="error-message" *ngIf="projectForm.get('description')?.touched && projectForm.get('description')?.errors">
+      <span *ngIf="projectForm.get('description')?.errors?.['required']">توضیحات الزامی است</span>
+      <span *ngIf="projectForm.get('description')?.errors?.['minlength']">توضیحات باید حداقل ۱۰ کاراکتر باشد</span>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="endDate">تاریخ پایان (شمسی - اختیاری)</label>
+    <input type="text" id="endDate" formControlName="endDate" class="form-control" placeholder="1403-12-29">
+    <small class="form-text text-muted">فرمت: سال-ماه-روز (مثال: 1403-12-29)</small>
+  </div>
+
+  <div class="form-group">
+    <label>اعضای پروژه</label>
+    <div class="users-selection">
+      <div class="user-checkbox" *ngFor="let user of users">
+        <label>
+          <input type="checkbox"
+                 [value]="user.id"
+                 [checked]="isUserSelected(user.id)"
+                 (change)="onUserSelectionChange(user, $event)">
+          {{ user.username }}  ({{ user.email }})
+        </label>
+      </div>
+    </div>
+
+    <div class="selected-users" *ngIf="selectedUsers.length > 0">
+      <h4>اعضای انتخاب شده:</h4>
+      <div class="selected-users-list">
+        <span class="user-tag" *ngFor="let user of selectedUsers">
+          {{ user.username }}
+          <i class="fas fa-times" (click)="removeUser(user)"></i>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-actions">
+    <button type="button" (click)="onCancel()" class="btn btn-secondary">لغو</button>
+    <button type="submit" [disabled]="submitting || projectForm.invalid" class="btn btn-primary">
+      <span *ngIf="submitting" class="spinner-border spinner-border-sm"></span>
+      {{ isEditMode ? 'بروزرسانی' : 'ایجاد' }} پروژه
+    </button>
+  </div>
+</form>

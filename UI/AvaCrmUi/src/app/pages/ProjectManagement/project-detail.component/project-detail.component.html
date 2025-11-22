@@ -1,0 +1,363 @@
+<!-- project-detail.component.html -->
+<div class="project-detail-container" *ngIf="!loading; else loadingTemplate">
+  <!-- Header -->
+  <div class="project-detail-header">
+    <button class="btn btn-secondary back-btn" (click)="goBack()">
+      <i class="fas fa-arrow-right"></i>
+      بازگشت به لیست پروژه‌ها
+    </button>
+
+    <div class="header-content">
+      <div class="project-title-section">
+        <h1>{{ project?.title }}</h1>
+        <span class="status-badge" [class]="getStatusClass(project?.status!)">
+          {{ getStatusText(project?.status!) }}
+        </span>
+      </div>
+
+      <button class="btn btn-primary" (click)="openCreateTaskModal()">
+        <i class="fas fa-plus"></i>
+        تسک جدید
+      </button>
+    </div>
+  </div>
+
+  <!-- Project Info -->
+  <div class="project-info-section">
+    <div class="info-card">
+      <h3><i class="fas fa-info-circle"></i> توضیحات پروژه</h3>
+      <p>{{ project?.description || 'بدون توضیحات' }}</p>
+    </div>
+
+    <div class="project-meta-cards">
+      <div class="meta-card">
+        <i class="fas fa-calendar-alt"></i>
+        <div class="meta-content">
+          <span class="meta-label">تاریخ شروع</span>
+          <span class="meta-value">{{ toPersianDate(project?.startDate!) }}</span>
+        </div>
+      </div>
+
+      <div class="meta-card" *ngIf="project?.endDate">
+        <i class="fas fa-flag-checkered"></i>
+        <div class="meta-content">
+          <span class="meta-label">تاریخ پایان</span>
+          <span class="meta-value">{{ toPersianDate(project?.endDate!) }}</span>
+        </div>
+      </div>
+
+      <div class="meta-card">
+        <i class="fas fa-tasks"></i>
+        <div class="meta-content">
+          <span class="meta-label">تعداد تسک‌ها</span>
+          <span class="meta-value">{{ tasks.length }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Trello-like Board -->
+  <div class="board-container" *ngIf="!tasksLoading; else tasksLoadingTemplate">
+    <div class="board">
+       <!-- To Do Column -->
+      <div class="board-column">
+        <div class="column-header todo-header">
+          <h3>برای انجام</h3>
+          <span class="task-count">{{ todoTasks.length }}</span>
+        </div>
+        <div
+          id="todoList"
+          cdkDropList
+          #todoList="cdkDropList"
+          [cdkDropListData]="todoTasks"
+          [cdkDropListConnectedTo]="connectedDropLists"
+          (cdkDropListDropped)="onTaskDrop($event)"
+          class="task-list">
+          <div
+            *ngFor="let task of todoTasks"
+            cdkDrag
+            class="task-card">
+            <div class="task-card-content">
+              <div class="task-header">
+                <h4>{{ task.title }}</h4>
+                <div class="task-actions">
+                  <button class="btn-icon" (click)="openEditTaskModal(task)">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  <!-- اضافه کردن دکمه فایل -->
+                  <button class="btn-icon btn-info" (click)="openAttachmentModal(task)">
+                    <i class="fas fa-paperclip"></i>
+                  </button>
+
+                  <button class="btn-icon btn-danger" (click)="deleteTask(task)">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+              </div>
+
+              <p class="task-description" *ngIf="task.description">
+                {{ task.description }}
+              </p>
+
+              <div class="task-meta">
+                <span class="task-priority" [class]="getTaskPriorityClass(task.priority)">
+                  {{ getTaskPriorityText(task.priority) }}
+                </span>
+
+                <span class="task-assignee">
+                  <i class="fas fa-user"></i>
+                  {{ getUserName(task.assignedTo) }}
+                </span>
+              </div>
+
+              <div class="task-due-date" *ngIf="task.dueDate">
+                <i class="fas fa-clock"></i>
+                {{ toPersianDate(task.dueDate) }}
+              </div>
+            </div>
+          </div>
+
+          <div class="empty-column" *ngIf="todoTasks.length === 0">
+            <i class="fas fa-ban"></i>
+            <p>تسکی وجود ندارد</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- In Progress Column -->
+      <div class="board-column">
+        <div class="column-header inprogress-header">
+          <h3>در حال انجام</h3>
+          <span class="task-count">{{ inProgressTasks.length }}</span>
+        </div>
+        <div
+          id="inProgressList"
+          cdkDropList
+          #inProgressList="cdkDropList"
+          [cdkDropListData]="inProgressTasks"
+          [cdkDropListConnectedTo]="connectedDropLists"
+          (cdkDropListDropped)="onTaskDrop($event)"
+          class="task-list">
+          <div
+            *ngFor="let task of inProgressTasks"
+            cdkDrag
+            class="task-card">
+            <div class="task-card-content">
+              <div class="task-header">
+                <h4>{{ task.title }}</h4>
+                <div class="task-actions">
+                  <button class="btn-icon" (click)="openEditTaskModal(task)">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  <!-- اضافه کردن دکمه فایل -->
+                  <button class="btn-icon btn-info" (click)="openAttachmentModal(task)">
+                    <i class="fas fa-paperclip"></i>
+                  </button>
+
+                  <button class="btn-icon btn-danger" (click)="deleteTask(task)">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+              </div>
+
+              <p class="task-description" *ngIf="task.description">
+                {{ task.description }}
+              </p>
+
+              <div class="task-meta">
+                <span class="task-priority" [class]="getTaskPriorityClass(task.priority)">
+                  {{ getTaskPriorityText(task.priority) }}
+                </span>
+
+                <span class="task-assignee">
+                  <i class="fas fa-user"></i>
+                  {{ getUserName(task.assignedTo) }}
+                </span>
+              </div>
+
+              <div class="task-due-date" *ngIf="task.dueDate">
+                <i class="fas fa-clock"></i>
+                {{ toPersianDate(task.dueDate) }}
+              </div>
+            </div>
+          </div>
+
+          <div class="empty-column" *ngIf="inProgressTasks.length === 0">
+            <i class="fas fa-ban"></i>
+            <p>تسکی وجود ندارد</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Done Column -->
+      <div class="board-column">
+        <div class="column-header done-header">
+          <h3>انجام شده</h3>
+          <span class="task-count">{{ doneTasks.length }}</span>
+        </div>
+        <div
+          id="doneList"
+          cdkDropList
+          #doneList="cdkDropList"
+          [cdkDropListData]="doneTasks"
+          [cdkDropListConnectedTo]="connectedDropLists"
+          (cdkDropListDropped)="onTaskDrop($event)"
+          class="task-list">
+          <div
+            *ngFor="let task of doneTasks"
+            cdkDrag
+            class="task-card">
+            <div class="task-card-content">
+              <div class="task-header">
+                <h4>{{ task.title }}</h4>
+                <div class="task-actions">
+                  <button class="btn-icon" (click)="openEditTaskModal(task)">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  <!-- اضافه کردن دکمه فایل -->
+                  <button class="btn-icon btn-info" (click)="openAttachmentModal(task)">
+                    <i class="fas fa-paperclip"></i>
+                  </button>
+
+                  <button class="btn-icon btn-danger" (click)="deleteTask(task)">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+              </div>
+
+              <p class="task-description" *ngIf="task.description">
+                {{ task.description }}
+              </p>
+
+              <div class="task-meta">
+                <span class="task-priority" [class]="getTaskPriorityClass(task.priority)">
+                  {{ getTaskPriorityText(task.priority) }}
+                </span>
+
+                <span class="task-assignee">
+                  <i class="fas fa-user"></i>
+                  {{ getUserName(task.assignedTo) }}
+                </span>
+              </div>
+
+              <div class="task-due-date" *ngIf="task.dueDate">
+                <i class="fas fa-clock"></i>
+                {{ toPersianDate(task.dueDate) }}
+              </div>
+            </div>
+          </div>
+
+          <div class="empty-column" *ngIf="doneTasks.length === 0">
+            <i class="fas fa-ban"></i>
+            <p>تسکی وجود ندارد</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cancelled Column -->
+      <div class="board-column">
+        <div class="column-header cancelled-header">
+          <h3>لغو شده</h3>
+          <span class="task-count">{{ cancelledTasks.length }}</span>
+        </div>
+        <div
+          id="cancelledList"
+          cdkDropList
+          #cancelledList="cdkDropList"
+          [cdkDropListData]="cancelledTasks"
+          [cdkDropListConnectedTo]="connectedDropLists"
+          (cdkDropListDropped)="onTaskDrop($event)"
+          class="task-list">
+          <div
+            *ngFor="let task of cancelledTasks"
+            cdkDrag
+            class="task-card">
+            <div class="task-card-content">
+              <div class="task-header">
+                <h4>{{ task.title }}</h4>
+                <div class="task-actions">
+                  <button class="btn-icon" (click)="openEditTaskModal(task)">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  <!-- اضافه کردن دکمه فایل -->
+                  <button class="btn-icon btn-info" (click)="openAttachmentModal(task)">
+                    <i class="fas fa-paperclip"></i>
+                  </button>
+
+                  <button class="btn-icon btn-danger" (click)="deleteTask(task)">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+              </div>
+
+              <p class="task-description" *ngIf="task.description">
+                {{ task.description }}
+              </p>
+
+              <div class="task-meta">
+                <span class="task-priority" [class]="getTaskPriorityClass(task.priority)">
+                  {{ getTaskPriorityText(task.priority) }}
+                </span>
+
+                <span class="task-assignee">
+                  <i class="fas fa-user"></i>
+                  {{ getUserName(task.assignedTo) }}
+                </span>
+              </div>
+
+              <div class="task-due-date" *ngIf="task.dueDate">
+                <i class="fas fa-clock"></i>
+                {{ toPersianDate(task.dueDate) }}
+              </div>
+            </div>
+          </div>
+
+          <div class="empty-column" *ngIf="cancelledTasks.length === 0">
+            <i class="fas fa-ban"></i>
+            <p>لغو شده‌ای وجود ندارد</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modals -->
+<app-attachment-modal
+  *ngIf="showAttachmentModal && selectedTaskForAttachment"
+  [taskId]="selectedTaskForAttachment.id"
+  [taskTitle]="selectedTaskForAttachment.title"
+  (modalClose)="closeAttachmentModal()">
+</app-attachment-modal>
+<app-task-form
+  *ngIf="showCreateTaskModal"
+  [projectId]="project?.id!"
+  [users]="users"
+  [isEditMode]="false"
+  (formSubmit)="onTaskCreated($event)"
+  (formCancel)="closeCreateTaskModal()">
+</app-task-form>
+
+<app-task-form
+  *ngIf="showEditTaskModal"
+  [projectId]="project?.id!"
+  [users]="users"
+  [task]="selectedTask"
+  [isEditMode]="true"
+  (formSubmit)="onTaskUpdated($event)"
+  (formCancel)="closeEditTaskModal()">
+</app-task-form>
+
+<ng-template #loadingTemplate>
+  <div class="loading-container">
+    <i class="fas fa-spinner fa-spin"></i>
+    <span>در حال بارگذاری پروژه...</span>
+  </div>
+</ng-template>
+
+<ng-template #tasksLoadingTemplate>
+  <div class="loading-container">
+    <i class="fas fa-spinner fa-spin"></i>
+    <span>در حال بارگذاری تسک‌ها...</span>
+  </div>
+</ng-template>

@@ -4,6 +4,7 @@ using AvaCrm.Application.Features.Account;
 using AvaCrm.Application.Features.CustomerManagement.Customers;
 using AvaCrm.Application.Features.CustomerManagement.Tags;
 using AvaCrm.Application.Features.Dashboard;
+using AvaCrm.Application.Features.ProjectManagement;
 
 namespace AvaCrm.Application;
 
@@ -31,5 +32,10 @@ public static class ApplicationServicesRegistration
         services.AddScoped<IDashboardService, DashboardService>();
         services.AddScoped<IRoleService, RoleService>();
         services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IProjectService,ProjectService>();
+        services.AddScoped<ITaskItemService,TaskItemService>();
+        services.AddScoped<IFileStorage, LocalFileStorage>();
+        services.AddScoped<IFileValidator, FileValidator>();
+        services.AddScoped<IAttachmentService, AttachmentService>();
     }
 }

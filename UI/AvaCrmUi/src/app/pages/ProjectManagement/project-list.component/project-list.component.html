@@ -1,0 +1,220 @@
+<div class="projects-container">
+  <!-- Header and Filters -->
+  <div class="projects-header">
+    <h1>پروژه‌ها</h1>
+    <button class="btn btn-primary" (click)="openCreateModal()">
+      <i class="fas fa-plus"></i>
+      پروژه جدید
+    </button>
+  </div>
+
+  <div class="filters-section">
+    <div class="search-box">
+      <input type="text"
+             [(ngModel)]="paginationRequest.searchTerm"
+             (keyup.enter)="onSearch(paginationRequest.searchTerm || '')"
+             placeholder="جستجو در پروژه‌ها...">
+      <button class="search-btn" (click)="onSearch(paginationRequest.searchTerm || '')">
+        <i class="fas fa-search"></i>
+      </button>
+    </div>
+
+    <div class="status-filters">
+      <button class="filter-btn"
+              [class.active]="statusFilter === null"
+              (click)="onStatusFilterChange(null)">
+        همه
+      </button>
+      <button class="filter-btn"
+              [class.active]="statusFilter === projectStatus.Planning"
+              (click)="onStatusFilterChange(projectStatus.Planning)">
+        برنامه‌ریزی
+      </button>
+      <button class="filter-btn"
+              [class.active]="statusFilter === projectStatus.Active"
+              (click)="onStatusFilterChange(projectStatus.Active)">
+        فعال
+      </button>
+      <button class="filter-btn"
+              [class.active]="statusFilter === projectStatus.Completed"
+              (click)="onStatusFilterChange(projectStatus.Completed)">
+        تکمیل شده
+      </button>
+      <button class="filter-btn"
+              [class.active]="statusFilter === projectStatus.Archived"
+              (click)="onStatusFilterChange(projectStatus.Archived)">
+        آرشیو
+      </button>
+    </div>
+  </div>
+
+  <!-- Projects List -->
+  <div class="projects-list">
+    <div class="project-item"
+         *ngFor="let project of projects"
+         [class]="'status-' + getStatusClass(project.status)"
+         (click)="navigateToProject(project.id)">
+
+      <div class="project-header">
+        <div class="project-title-section">
+          <h3 class="project-title">{{ project.title }}</h3>
+          <span class="status-badge" [class]="'status-' + getStatusClass(project.status)">
+          {{ getStatusText(project.status) }}
+        </span>
+        </div>
+
+        <div class="project-actions" (click)="$event.stopPropagation()">
+          <button class="btn btn-sm btn-info" (click)="openEditModal(project)">
+            <i class="fas fa-edit"></i>
+            ویرایش
+          </button>
+          <button class="btn btn-sm btn-warning" (click)="openStatusModal(project)">
+            <i class="fas fa-sync-alt"></i>
+            وضعیت
+          </button>
+          <button class="btn btn-sm btn-danger" (click)="openDeleteModal(project)">
+            <i class="fas fa-trash"></i>
+            حذف
+          </button>
+        </div>
+      </div>
+
+      <div class="project-body">
+        <div class="project-description">
+          <p [class.expanded]="isDescriptionExpanded(project.id)">
+            {{ project.description }}
+          </p>
+          <button class="show-more-btn"
+                  *ngIf="project.description.length > 150"
+                  (click)="toggleDescription(project.id); $event.stopPropagation()">
+            {{ isDescriptionExpanded(project.id) ? 'نمایش کمتر' : 'نمایش بیشتر' }}
+          </button>
+        </div>
+
+        <div class="project-details">
+          <div class="detail-item">
+            <i class="fas fa-calendar-alt"></i>
+            <span>تاریخ شروع: {{ toPersianDate(project.startDate) }}</span>
+          </div>
+          <div class="detail-item" *ngIf="project.endDate">
+            <i class="fas fa-flag-checkered"></i>
+            <span>تاریخ پایان: {{ toPersianDate(project.endDate) }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Loading States -->
+  <div class="loading-section">
+    <div class="loading-spinner" *ngIf="loading">
+      <i class="fas fa-spinner fa-spin"></i>
+      <span>در حال بارگذاری پروژه‌ها...</span>
+    </div>
+
+    <div class="load-more" *ngIf="!loading && hasMore && projects.length > 0">
+      <button class="btn btn-outline-primary load-more-btn"
+              (click)="loadMore()"
+              [disabled]="loadingMore">
+        <i class="fas fa-arrow-down" *ngIf="!loadingMore"></i>
+        <i class="fas fa-spinner fa-spin" *ngIf="loadingMore"></i>
+        {{ loadingMore ? 'در حال بارگذاری...' : 'مشاهده بیشتر' }}
+      </button>
+    </div>
+
+    <div class="no-projects" *ngIf="!loading && projects.length === 0">
+      <i class="fas fa-folder-open"></i>
+      <p>هیچ پروژه‌ای یافت نشد</p>
+    </div>
+  </div>
+
+  <!-- Create Project Modal -->
+  <div class="modal-backdrop" *ngIf="showCreateModal" (click)="closeCreateModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>ایجاد پروژه جدید</h3>
+        <button class="close-btn" (click)="closeCreateModal()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <app-project-form
+          [isEditMode]="false"
+          (formSubmit)="onCreateSubmit($event)"
+          (formCancel)="closeCreateModal()">
+        </app-project-form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Project Modal -->
+  <div class="modal-backdrop" *ngIf="showEditModal" (click)="closeEditModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>ویرایش پروژه</h3>
+        <button class="close-btn" (click)="closeEditModal()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <app-project-form
+          [isEditMode]="true"
+          [project]="selectedProject"
+          (formSubmit)="onEditSubmit($event)"
+          (formCancel)="closeEditModal()">
+        </app-project-form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Change Status Modal -->
+  <div class="modal-backdrop" *ngIf="showStatusModal" (click)="closeStatusModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>تغییر وضعیت پروژه</h3>
+        <button class="close-btn" (click)="closeStatusModal()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="statusForm" (ngSubmit)="onStatusSubmit()">
+          <div class="form-group">
+            <label>وضعیت جدید</label>
+            <select formControlName="status" class="form-control">
+              <option [value]="projectStatus.Planning">در حال برنامه‌ریزی</option>
+              <option [value]="projectStatus.Active">فعال</option>
+              <option [value]="projectStatus.Completed">تکمیل شده</option>
+              <option [value]="projectStatus.Archived">آرشیو شده</option>
+            </select>
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn btn-secondary" (click)="closeStatusModal()">لغو</button>
+            <button type="submit" class="btn btn-primary" [disabled]="statusForm.invalid">تغییر وضعیت</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div class="modal-backdrop" *ngIf="showDeleteModal" (click)="closeDeleteModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>حذف پروژه</h3>
+        <button class="close-btn" (click)="closeDeleteModal()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="delete-confirmation">
+          <i class="fas fa-exclamation-triangle warning-icon"></i>
+          <p>آیا از حذف پروژه "{{ selectedProject?.title }}" اطمینان دارید؟</p>
+          <p class="warning-text">این عمل قابل بازگشت نیست!</p>
+          <div class="modal-actions">
+            <button type="button" class="btn btn-secondary" (click)="closeDeleteModal()">لغو</button>
+            <button type="button" class="btn btn-danger" (click)="onDeleteConfirm()">حذف پروژه</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

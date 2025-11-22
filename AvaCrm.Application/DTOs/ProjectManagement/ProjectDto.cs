@@ -1,0 +1,13 @@
+﻿using AvaCrm.Domain.Enums.ProjectManagement;
+
+namespace AvaCrm.Application.DTOs.ProjectManagement;
+
+public class ProjectDto
+{
+    public long Id { get; set; }
+    public string Title { get; set; } = string.Empty;
+    public string? Description { get; set; }
+    public DateTime StartDate { get; set; }
+    public DateTime? EndDate { get; set; }
+    public ProjectStatus Status { get; set; }
+}

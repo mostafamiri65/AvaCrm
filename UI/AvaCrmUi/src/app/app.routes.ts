@@ -31,6 +31,8 @@ import {
 import {FollowUpListComponent} from './pages/customerManagement/follow-up-list.component/follow-up-list.component';
 import {UserListComponent} from './pages/Common/user-list.component/user-list.component';
 import {RoleListComponent} from './pages/Common/role-list.component/role-list.component';
+import {ProjectListComponent} from './pages/ProjectManagement/project-list.component/project-list.component';
+import {ProjectDetailComponent} from './pages/ProjectManagement/project-detail.component/project-detail.component';
 
 export const routes: Routes = [
   {
@@ -52,6 +54,9 @@ export const routes: Routes = [
       { path: 'users', component: UserListComponent },
       { path: 'roles', component: RoleListComponent },
       // { path: 'customers/edit/:id', component: CustomerEditComponent },
+      // Project Management
+      {path: 'projects', component: ProjectListComponent},
+      {path: 'projects/:id', component: ProjectDetailComponent},
 
     ],
 

@@ -3,7 +3,6 @@ using AvaCrm.Application.Features.Commons.Countries.Requests.Commands;
 using AvaCrm.Application.Features.Commons.Countries.Requests.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AvaCrm.Api.Controllers;

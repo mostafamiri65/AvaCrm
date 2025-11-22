@@ -139,4 +139,37 @@ export class ApiAddressUtility {
   static roles: string = "/Roles";
   static roleById: string = "/Roles";
 
+  // Projects
+  static projects: string = "/Projects";
+  static projectById(projectId: number): string {
+    return `/Projects/GetById/${projectId}`;
+  }
+  static getAllProjects: string = "/Projects/GetAll";
+  static createProject: string = "/Projects/CreateProject";
+  static updateProject: string = "/Projects/UpdateProject";
+  static changeProjectStatus(projectId: number): string {
+    return `/Projects/ChangeStatus/${projectId}`;
+  }
+  static deleteProject: string = "/Projects/DeleteProject";
+
+  static getAllTasks: string = "/TaskItems/GetAllTasks";
+  static getTask(taskItemId: number): string {
+    return `/TaskItems/GetTask/${taskItemId}`;
+  }
+  static createTask: string = "/TaskItems/CreateTask";
+  static updateTask: string = "/TaskItems/UpdateTask";
+  static deleteTask(taskItemId: number): string {
+    return `/TaskItems/DeleteTask/${taskItemId}`;
+  }
+
+  // Attachments
+  static getAttachments(taskItemId: number): string {
+    return `/Attachments/GetAttachments/${taskItemId}`;
+  }
+
+  static uploadFile: string = "/Attachments/UploadFile";
+
+  static deleteAttachment(attachmentId: number): string {
+    return `/Attachments/DeleteAttachment/${attachmentId}`;
+  }
 }

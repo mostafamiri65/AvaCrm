@@ -1,0 +1,387 @@
+/* project-detail.component.css */
+.project-detail-container {
+  padding: 20px;
+  direction: rtl;
+  min-height: 100vh;
+  background: #f8f9fa;
+}
+
+.project-detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 30px;
+  gap: 20px;
+}
+
+.back-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #6c757d;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.back-btn:hover {
+  background: #5a6268;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex: 1;
+  gap: 20px;
+}
+
+.project-title-section {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.project-title-section h1 {
+  color: #2c3e50;
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.status-badge {
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.status-badge.status-planning { background: #f39c12; color: white; }
+.status-badge.status-active { background: #27ae60; color: white; }
+.status-badge.status-completed { background: #3498db; color: white; }
+.status-badge.status-archived { background: #95a5a6; color: white; }
+
+/* Project Info Section */
+.project-info-section {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 30px;
+  margin-bottom: 40px;
+}
+
+.info-card {
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  border-right: 4px solid #3498db;
+}
+
+.info-card h3 {
+  margin: 0 0 15px 0;
+  color: #2c3e50;
+  font-size: 1.3rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.info-card p {
+  color: #5a6c7d;
+  line-height: 1.7;
+  margin: 0;
+}
+
+.project-meta-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.meta-card {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.meta-card i {
+  font-size: 24px;
+  color: #3498db;
+  width: 40px;
+  text-align: center;
+}
+
+.meta-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.meta-label {
+  font-size: 12px;
+  color: #6c757d;
+  margin-bottom: 5px;
+}
+
+.meta-value {
+  font-size: 16px;
+  color: #2c3e50;
+  font-weight: 600;
+}
+
+/* Trello-like Board */
+.board-container {
+  margin-bottom: 40px;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.board-column {
+  background: #f8f9fa;
+  border-radius: 12px;
+  min-height: 600px;
+  border: 2px dashed #e9ecef;
+}
+
+.column-header {
+  padding: 20px;
+  border-radius: 12px 12px 0 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: white;
+  font-weight: 600;
+}
+
+.column-header h3 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.task-count {
+  background: rgba(255,255,255,0.2);
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+}
+
+.todo-header { background: #6c757d; }
+.inprogress-header { background: #17a2b8; }
+.done-header { background: #28a745; }
+.cancelled-header { background: #dc3545; }
+
+.task-list {
+  padding: 15px;
+  min-height: 500px;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.task-card {
+  background: white;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  border-left: 4px solid #3498db;
+  cursor: grab;
+  transition: all 0.3s ease;
+}
+
+.task-card:active {
+  cursor: grabbing;
+  transform: rotate(5deg);
+}
+
+.task-card:hover {
+  box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+}
+
+.task-card-content {
+  padding: 15px;
+}
+
+.task-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 10px;
+  gap: 10px;
+}
+
+.task-header h4 {
+  margin: 0;
+  color: #2c3e50;
+  font-size: 1rem;
+  line-height: 1.4;
+  flex: 1;
+}
+
+.task-actions {
+  display: flex;
+  gap: 5px;
+}
+
+.btn-icon {
+  background: none;
+  border: none;
+  padding: 5px;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #6c757d;
+  transition: all 0.3s ease;
+}
+
+.btn-icon:hover {
+  background: #f8f9fa;
+  color: #3498db;
+}
+
+.btn-icon.btn-danger:hover {
+  color: #dc3545;
+}
+
+.task-description {
+  color: #5a6c7d;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin: 0 0 15px 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.task-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  gap: 10px;
+}
+
+.task-priority {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.priority-low { background: #28a745; color: white; }
+.priority-medium { background: #ffc107; color: #212529; }
+.priority-high { background: #fd7e14; color: white; }
+.priority-critical { background: #dc3545; color: white; }
+
+.task-assignee {
+  font-size: 0.8rem;
+  color: #6c757d;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.task-due-date {
+  font-size: 0.8rem;
+  color: #6c757d;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding-top: 10px;
+  border-top: 1px solid #e9ecef;
+}
+
+.empty-column {
+  text-align: center;
+  padding: 40px 20px;
+  color: #6c757d;
+}
+
+.empty-column i {
+  font-size: 48px;
+  margin-bottom: 15px;
+  color: #bdc3c7;
+}
+
+.empty-column p {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+/* Drag and Drop Styles */
+.cdk-drag-preview {
+  box-sizing: border-box;
+  border-radius: 8px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+  transform: rotate(5deg);
+}
+
+.cdk-drag-placeholder {
+  opacity: 0.3;
+}
+
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.task-list.cdk-drop-list-dragging .task-card:not(.cdk-drag-placeholder) {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+/* Loading States */
+.loading-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  padding: 60px 20px;
+  color: #6c757d;
+  font-size: 16px;
+}
+
+.loading-container i {
+  font-size: 20px;
+  color: #3498db;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .board {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .project-info-section {
+    grid-template-columns: 1fr;
+  }
+
+  .project-detail-header {
+    flex-direction: column;
+  }
+
+  .header-content {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .board {
+    grid-template-columns: 1fr;
+  }
+
+  .task-meta {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

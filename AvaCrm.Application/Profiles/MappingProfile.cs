@@ -9,137 +9,157 @@ using AvaCrm.Application.DTOs.CustomerManagement.Interactions;
 using AvaCrm.Application.DTOs.CustomerManagement.Notes;
 using AvaCrm.Application.DTOs.CustomerManagement.OrganizationCustomers;
 using AvaCrm.Application.DTOs.CustomerManagement.Tags;
+using AvaCrm.Application.DTOs.ProjectManagement;
 using AvaCrm.Domain.Entities.CustomerManagement;
+using AvaCrm.Domain.Entities.ProjectManagement;
 using AvaCrm.Domain.Enums.CustomerManagement;
 
 namespace AvaCrm.Application.Profiles;
 
 public class MappingProfile : Profile
 {
-	public MappingProfile()
-	{
-		#region Country
-		CreateMap<Country, CountryDto>().ReverseMap();
-		CreateMap<Country, CreateCountryDto>().ReverseMap();
-		#endregion
+    public MappingProfile()
+    {
+        #region Country
+        CreateMap<Country, CountryDto>().ReverseMap();
+        CreateMap<Country, CreateCountryDto>().ReverseMap();
+        #endregion
+        #region Province
+        CreateMap<Province, ProvinceDto>().ReverseMap();
+        CreateMap<Province, CreateProvinceDto>().ReverseMap();
+        #endregion
 
-		#region Customer Management
+        #region City
+        CreateMap<City, CityDto>().ReverseMap();
+        CreateMap<City, CreateCityDto>().ReverseMap();
+        #endregion
 
-		#region Customer
-		CreateMap<Customer, CustomerListDto>()
-			.ForMember(dest => dest.CustomerName, opt => opt.MapFrom(src =>
-				src.CustomerType == CustomerType.Individual && src.IndividualCustomer != null
-					? $"{src.IndividualCustomer.FirstName} {src.IndividualCustomer.LastName}"
-					: src.OrganizationCustomer != null
-						? src.OrganizationCustomer.CompanyName
-						: string.Empty))
-			.ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src =>
-				src.CustomerType == CustomerType.Organization && src.OrganizationCustomer != null
-					? src.OrganizationCustomer.CompanyName
-					: string.Empty))
-			.ForMember(dest => dest.Tags, opt => opt.MapFrom(src =>
-				src.CustomerTags != null
-					? src.CustomerTags.Select(ct => ct.Tag.Title).ToList()
-					: new List<string>()))
-			.ForMember(dest => dest.TypeOfCustomer, opt => opt.MapFrom(src => (int)src.CustomerType)); 
+        #region Customer Management
 
-		CreateMap<Customer, CustomerDetailDto>();
-		CreateMap<CustomerCreateDto, Customer>();
-		CreateMap<CustomerUpdateDto, Customer>();
-		#endregion
+        #region Customer
+        CreateMap<Customer, CustomerListDto>()
+            .ForMember(dest => dest.CustomerName, opt => opt.MapFrom(src =>
+                src.CustomerType == CustomerType.Individual && src.IndividualCustomer != null
+                    ? $"{src.IndividualCustomer.FirstName} {src.IndividualCustomer.LastName}"
+                    : src.OrganizationCustomer != null
+                        ? src.OrganizationCustomer.CompanyName
+                        : string.Empty))
+            .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src =>
+                src.CustomerType == CustomerType.Organization && src.OrganizationCustomer != null
+                    ? src.OrganizationCustomer.CompanyName
+                    : string.Empty))
+            .ForMember(dest => dest.Tags, opt => opt.MapFrom(src =>
+                src.CustomerTags != null
+                    ? src.CustomerTags.Select(ct => ct.Tag.Title!).ToList()
+                    : new List<string>()))
+            .ForMember(dest => dest.TypeOfCustomer, opt => opt.MapFrom(src => (int)src.CustomerType));
 
-		#region IndividualCustomer
-		CreateMap<IndividualCustomer, IndividualCustomerListDto>()
-			.ForMember(dest => dest.CustomerCode, opt => opt.MapFrom(src => src.Customer.Code))
-			.ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Customer.Email))
-			.ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.Customer.PhoneNumber));
+        CreateMap<Customer, CustomerDetailDto>();
+        CreateMap<CustomerCreateDto, Customer>();
+        CreateMap<CustomerUpdateDto, Customer>();
+        #endregion
 
-		CreateMap<IndividualCustomerCreateDto, IndividualCustomer>();
-		CreateMap<IndividualCustomerUpdateDto, IndividualCustomer>();
-		#endregion
+        #region IndividualCustomer
+        CreateMap<IndividualCustomer, IndividualCustomerListDto>()
+            .ForMember(dest => dest.CustomerCode, opt => opt.MapFrom(src => src.Customer.Code))
+            .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Customer.Email))
+            .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.Customer.PhoneNumber));
 
-		#region OrganizationCustomer
-		CreateMap<OrganizationCustomer, OrganizationCustomerListDto>()
-			.ForMember(dest => dest.CustomerCode, opt => opt.MapFrom(src => src.Customer.Code))
-			.ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Customer.Email))
-			.ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.Customer.PhoneNumber));
+        CreateMap<IndividualCustomerCreateDto, IndividualCustomer>();
+        CreateMap<IndividualCustomerUpdateDto, IndividualCustomer>();
+        #endregion
 
-		CreateMap<OrganizationCustomerCreateDto, OrganizationCustomer>();
-		CreateMap<OrganizationCustomerUpdateDto, OrganizationCustomer>();
-		#endregion
+        #region OrganizationCustomer
+        CreateMap<OrganizationCustomer, OrganizationCustomerListDto>()
+            .ForMember(dest => dest.CustomerCode, opt => opt.MapFrom(src => src.Customer.Code))
+            .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Customer.Email))
+            .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.Customer.PhoneNumber));
 
-		#region ContactPerson
-		CreateMap<ContactPerson, ContactPersonListDto>()
-			.ForMember(dest => dest.CustomerCode, opt => opt.MapFrom(src => src.Customer.Code));
+        CreateMap<OrganizationCustomerCreateDto, OrganizationCustomer>();
+        CreateMap<OrganizationCustomerUpdateDto, OrganizationCustomer>();
+        #endregion
 
-		CreateMap<ContactPersonCreateDto, ContactPerson>();
-		CreateMap<ContactPersonUpdateDto, ContactPerson>();
-		#endregion
+        #region ContactPerson
+        CreateMap<ContactPerson, ContactPersonListDto>()
+            .ForMember(dest => dest.CustomerCode, opt => opt.MapFrom(src => src.Customer.Code));
 
-		#region CustomerAddress
-		CreateMap<CustomerAddress, CustomerAddressListDto>()
-			.ForMember(dest => dest.CustomerCode, opt => opt.MapFrom(src => src.Customer.Code))
-			.ForMember(dest => dest.CountryName, opt => opt.MapFrom(src => src.Country.Name))
-			.ForMember(dest => dest.ProvinceName, opt => opt.MapFrom(src => src.Province.Name))
-			.ForMember(dest => dest.CityName, opt => opt.MapFrom(src => src.City != null ? src.City.Name : string.Empty));
+        CreateMap<ContactPersonCreateDto, ContactPerson>();
+        CreateMap<ContactPersonUpdateDto, ContactPerson>();
+        #endregion
 
-		CreateMap<CustomerAddressCreateDto, CustomerAddress>().ReverseMap();
-		CreateMap<CustomerAddressUpdateDto, CustomerAddress>().ReverseMap();
-		#endregion
+        #region CustomerAddress
+        CreateMap<CustomerAddress, CustomerAddressListDto>()
+            .ForMember(dest => dest.CustomerCode, opt => opt.MapFrom(src => src.Customer.Code))
+            .ForMember(dest => dest.CountryName, opt => opt.MapFrom(src => src.Country.Name))
+            .ForMember(dest => dest.ProvinceName, opt => opt.MapFrom(src => src.Province.Name))
+            .ForMember(dest => dest.CityName, opt => opt.MapFrom(src => src.City != null ? src.City.Name : string.Empty));
 
-		#region FollowUp
-		CreateMap<FollowUp, FollowUpListDto>()
-			.ForMember(dest => dest.CustomerCode, opt => opt.MapFrom(src => src.Customer.Code))
-			.ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CreationDate));
+        CreateMap<CustomerAddressCreateDto, CustomerAddress>().ReverseMap();
+        CreateMap<CustomerAddressUpdateDto, CustomerAddress>().ReverseMap();
+        #endregion
 
-		CreateMap<FollowUpCreateDto, FollowUp>();
-		CreateMap<FollowUpUpdateDto, FollowUp>();
-		#endregion
+        #region FollowUp
+        CreateMap<FollowUp, FollowUpListDto>()
+            .ForMember(dest => dest.CustomerCode, opt => opt.MapFrom(src => src.Customer.Code))
+            .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CreationDate));
 
-		#region Interaction
-		CreateMap<Interaction, InteractionListDto>()
-			.ForMember(dest => dest.CustomerCode, opt => opt.MapFrom(src => src.Customer.Code))
-			.ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CreationDate))
-			.ForMember(dest => dest.InteractionTypeName, opt => opt.MapFrom(src => src.InteractionType.ToString()));
+        CreateMap<FollowUpCreateDto, FollowUp>();
+        CreateMap<FollowUpUpdateDto, FollowUp>();
+        #endregion
 
-		CreateMap<InteractionCreateDto, Interaction>();
-		CreateMap<InteractionUpdateDto, Interaction>();
-		#endregion
+        #region Interaction
+        CreateMap<Interaction, InteractionListDto>()
+            .ForMember(dest => dest.CustomerCode, opt => opt.MapFrom(src => src.Customer.Code))
+            .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CreationDate))
+            .ForMember(dest => dest.InteractionTypeName, opt => opt.MapFrom(src => src.InteractionType.ToString()));
 
-		#region Note
-		CreateMap<Note, NoteListDto>()
-			.ForMember(dest => dest.CustomerCode, opt => opt.MapFrom(src => src.Customer.Code))
-			.ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CreationDate));
+        CreateMap<InteractionCreateDto, Interaction>();
+        CreateMap<InteractionUpdateDto, Interaction>();
+        #endregion
 
-		CreateMap<NoteCreateDto, Note>();
-		CreateMap<NoteUpdateDto, Note>();
-		#endregion
+        #region Note
+        CreateMap<Note, NoteListDto>()
+            .ForMember(dest => dest.CustomerCode, opt => opt.MapFrom(src => src.Customer.Code))
+            .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CreationDate));
 
-		#region Tag
-		CreateMap<Tag, TagDto>()
-			.ForMember(dest => dest.CustomerCount, opt => opt.MapFrom(src => src.CustomerTags.Count));
+        CreateMap<NoteCreateDto, Note>();
+        CreateMap<NoteUpdateDto, Note>();
+        #endregion
 
-		CreateMap<TagDto, Tag>();
-		#endregion
+        #region Tag
+        CreateMap<Tag, TagDto>()
+            .ForMember(dest => dest.CustomerCount, opt => opt.MapFrom(src => src.CustomerTags != null ?
+            src.CustomerTags.Count : 0));
 
-		#region CustomerTag
-		CreateMap<CustomerTag, CustomerTagListDto>()
-			.ForMember(dest => dest.TagTitle, opt => opt.MapFrom(src => src.Tag.Title))
-			.ForMember(dest => dest.CustomerCode, opt => opt.MapFrom(src => src.Customer.Code));
+        CreateMap<TagDto, Tag>();
+        #endregion
 
-		CreateMap<CustomerTagCreateDto, CustomerTag>();
-		#endregion
+        #region CustomerTag
+        CreateMap<CustomerTag, CustomerTagListDto>()
+            .ForMember(dest => dest.TagTitle, opt => opt.MapFrom(src => src.Tag.Title))
+            .ForMember(dest => dest.CustomerCode, opt => opt.MapFrom(src => src.Customer.Code));
 
-		#region Province
-		CreateMap<Province, ProvinceDto>().ReverseMap();
-		CreateMap<Province, CreateProvinceDto>().ReverseMap();
-		#endregion
+        CreateMap<CustomerTagCreateDto, CustomerTag>();
+        #endregion
 
-		#region City
-		CreateMap<City, CityDto>().ReverseMap();
-		CreateMap<City, CreateCityDto>().ReverseMap();
-		#endregion
 
-		#endregion
-	}
+
+        #endregion
+
+        #region Project Management
+        #region Projects
+
+        CreateMap<Project, ProjectDto>().ReverseMap();
+        CreateMap<Project, CreateProjectDto>().ReverseMap();
+
+        #endregion
+        #region TaskItems
+        CreateMap<TaskItem, TaskItemDto>().ReverseMap();
+        CreateMap<TaskItem, CreateTaskItemDto>().ReverseMap();
+        #endregion
+        #region Attachment
+        CreateMap<Attachment, AttachmentDto>().ReverseMap();
+        #endregion
+        #endregion
+    }
 }
