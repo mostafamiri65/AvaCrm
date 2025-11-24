@@ -1,5 +1,6 @@
 ﻿
 using System.Reflection;
+using AvaCrm.Application.DTOs.ProjectManagement;
 using AvaCrm.Application.Features.Account;
 using AvaCrm.Application.Features.CustomerManagement.Customers;
 using AvaCrm.Application.Features.CustomerManagement.Tags;
@@ -37,5 +38,7 @@ public static class ApplicationServicesRegistration
         services.AddScoped<IFileStorage, LocalFileStorage>();
         services.AddScoped<IFileValidator, FileValidator>();
         services.AddScoped<IAttachmentService, AttachmentService>();
+        services.AddScoped<ICommentService, CommentService>();
+
     }
 }

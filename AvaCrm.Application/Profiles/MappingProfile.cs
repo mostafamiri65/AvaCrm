@@ -160,6 +160,11 @@ public class MappingProfile : Profile
         #region Attachment
         CreateMap<Attachment, AttachmentDto>().ReverseMap();
         #endregion
+        #region Comments
+        CreateMap<Comment, CommentDto>().ReverseMap();
+        CreateMap<Comment, CreateCommentDto>().ReverseMap();
+        CreateMap<UpdateCommentDto, Comment>().ReverseMap();
+        #endregion
         #endregion
     }
 }

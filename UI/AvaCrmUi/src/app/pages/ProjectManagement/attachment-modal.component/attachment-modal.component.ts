@@ -24,7 +24,6 @@ export class AttachmentModalComponent implements OnInit {
   attachments: AttachmentDto[] = [];
   loading = false;
   uploading = false;
-  uploadProgress = 0;
 
   // Upload properties
   selectedFile: File | null = null;
@@ -82,42 +81,51 @@ export class AttachmentModalComponent implements OnInit {
       return;
     }
 
+    console.log('Uploading file:', {
+      file: this.selectedFile.name,
+      taskId: this.taskId,
+      downloadedFileName: this.downloadedFileName
+    });
+
     this.uploading = true;
-    this.uploadProgress = 0;
 
     this.attachmentService.uploadFile(
       this.selectedFile,
       this.taskId,
       this.downloadedFileName.trim()
     ).subscribe({
-      next: (event: any) => {
-        if (event.type === 1) { // HttpEventType.UploadProgress
-          this.uploadProgress = Math.round(100 * event.loaded / event.total);
-        } else if (event.type === 4) { // HttpEventType.Response
-          const response = event.body;
+      next: (response) => {
+        console.log('Upload response:', response);
 
-          if (response.statusCode === 200) {
-            // Reset form
-            this.selectedFile = null;
-            this.downloadedFileName = '';
-            this.uploadProgress = 0;
-            // Reset file input
-            const fileInput = document.getElementById('fileInput') as HTMLInputElement;
-            if (fileInput) fileInput.value = '';
+        if (response.statusCode === 200) {
+          // Reset form
+          this.selectedFile = null;
+          this.downloadedFileName = '';
+          // Reset file input
+          const fileInput = document.getElementById('fileInput') as HTMLInputElement;
+          if (fileInput) fileInput.value = '';
 
-            this.loadAttachments(); // بارگذاری مجدد لیست
-            alert('فایل با موفقیت آپلود شد');
-          } else {
-            alert('خطا در آپلود فایل: ' + (response.message || 'خطای ناشناخته'));
-          }
-          this.uploading = false;
+          this.loadAttachments(); // بارگذاری مجدد لیست
+          alert('فایل با موفقیت آپلود شد');
+        } else {
+          alert('خطا در آپلود فایل: ' + (response.message || 'خطای ناشناخته'));
         }
+        this.uploading = false;
       },
       error: (error) => {
         console.error('Upload error:', error);
-        alert('خطا در آپلود فایل');
+
+        // نمایش خطای دقیق‌تر
+        if (error.error?.errors) {
+          const errorMessages = Object.values(error.error.errors).flat().join(', ');
+          alert('خطا در آپلود: ' + errorMessages);
+        } else if (error.error?.message) {
+          alert('خطا در آپلود: ' + error.error.message);
+        } else {
+          alert('خطا در آپلود فایل');
+        }
+
         this.uploading = false;
-        this.uploadProgress = 0;
       }
     });
   }
@@ -128,7 +136,6 @@ export class AttachmentModalComponent implements OnInit {
     this.determinePreviewType(attachment.fileName);
 
     // ایجاد URL برای پیش‌نمایش
-    // فرض می‌کنیم فایل‌ها از طریق API در دسترس هستند
     const fileUrl = this.getFileUrl(attachment);
     this.previewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(fileUrl);
   }
@@ -150,8 +157,12 @@ export class AttachmentModalComponent implements OnInit {
 
   // ایجاد URL فایل برای پیش‌نمایش و دانلود
   private getFileUrl(attachment: AttachmentDto): string {
-    // این آدرس بستگی به endpoint دانلود در backend شما دارد
-    // فرض می‌کنیم endpoint ای به نام DownloadFile دارید
+    // استفاده از filePath مستقیم اگر کامل است
+    if (attachment.filePath.startsWith('http')) {
+      return attachment.filePath;
+    }
+
+    // در غیر این صورت از endpoint دانلود استفاده کنید
     return `${ApiAddressUtility.BaseAddress}/Attachments/DownloadFile/${this.extractAttachmentId(attachment.filePath)}`;
   }
 
@@ -196,10 +207,10 @@ export class AttachmentModalComponent implements OnInit {
 
   private extractAttachmentId(filePath: string): number {
     try {
-      const parts = filePath.split('/');
-      const lastPart = parts[parts.length - 1];
-      const fileNameWithoutExtension = lastPart.split('.')[0];
-      return parseInt(fileNameWithoutExtension) || 0;
+      // سعی کنید ID را از filePath استخراج کنید
+      // این به ساختار filePath در backend شما بستگی دارد
+      const matches = filePath.match(/\/(\d+)\//);
+      return matches ? parseInt(matches[1]) : 0;
     } catch {
       return 0;
     }

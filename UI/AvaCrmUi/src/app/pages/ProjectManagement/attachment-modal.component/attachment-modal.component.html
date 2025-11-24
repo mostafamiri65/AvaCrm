@@ -50,19 +50,19 @@
               {{ uploading ? 'در حال آپلود...' : 'آپلود فایل' }}
             </button>
 
-            <div class="progress-container" *ngIf="uploading">
-              <div class="progress">
-                <div
-                  class="progress-bar"
-                  [style.width]="uploadProgress + '%'"
-                  role="progressbar"
-                  [attr.aria-valuenow]="uploadProgress"
-                  aria-valuemin="0"
-                  aria-valuemax="100">
-                  {{ uploadProgress }}%
-                </div>
-              </div>
-            </div>
+<!--            <div class="progress-container" *ngIf="uploading">-->
+<!--              <div class="progress">-->
+<!--                <div-->
+<!--                  class="progress-bar"-->
+<!--                  [style.width]="uploadProgress + '%'"-->
+<!--                  role="progressbar"-->
+<!--                  [attr.aria-valuenow]="uploadProgress"-->
+<!--                  aria-valuemin="0"-->
+<!--                  aria-valuemax="100">-->
+<!--                  {{ uploadProgress }}%-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </div>-->
 
             <div class="selected-file" *ngIf="selectedFile">
               <i class="fas fa-file"></i>

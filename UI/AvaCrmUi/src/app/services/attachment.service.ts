@@ -17,14 +17,16 @@ export class AttachmentService {
   uploadFile(file: File, taskId: number, downloadedFileName: string): Observable<any> {
     const formData = new FormData();
     formData.append('file', file, file.name);
+    formData.append('TaskId', taskId.toString()); // اضافه کردن به FormData
+    formData.append('DownloadedFileName', downloadedFileName); // اضافه کردن به FormData
 
-    const params = new HttpParams()
-      .set('taskId', taskId.toString())
-      .set('downloadedFileName', downloadedFileName);
+    console.log('FormData contents:');
+    for (let pair of (formData as any).entries()) {
+      console.log(pair[0] + ':', pair[1]);
+    }
 
-    return this.http.post(`${ApiAddressUtility.uploadFile}`, formData, {
-      params: params
-    });
+
+    return this.http.post(`${ApiAddressUtility.uploadFile}`, formData);
   }
   deleteAttachment(attachmentId: number): Observable<any> {
     return this.http.delete(`${ApiAddressUtility.deleteAttachment(attachmentId)}`);
