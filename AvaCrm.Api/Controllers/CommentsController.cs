@@ -28,7 +28,7 @@ public class CommentsController : BaseController
         return StatusCode(response.StatusCode, response);
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("GetComment/{id}")]
     public async Task<ActionResult<GlobalResponse<CommentDto>>> GetCommentById(
         long id, CancellationToken cancellationToken = default)
     {
@@ -36,7 +36,7 @@ public class CommentsController : BaseController
         return StatusCode(response.StatusCode, response);
     }
 
-    [HttpPost]
+    [HttpPost("CreateComment")]
     public async Task<ActionResult<GlobalResponse<ResponseResultGlobally>>> CreateComment(
         [FromBody] CreateCommentDto createCommentDto, CancellationToken cancellationToken = default)
     {
@@ -45,7 +45,7 @@ public class CommentsController : BaseController
         return StatusCode(response.StatusCode, response);
     }
 
-    [HttpPut]
+    [HttpPut("UpdateComment")]
     public async Task<ActionResult<GlobalResponse<ResponseResultGlobally>>> UpdateComment(
         [FromBody] UpdateCommentDto updateCommentDto, CancellationToken cancellationToken = default)
     {
@@ -53,7 +53,7 @@ public class CommentsController : BaseController
         return StatusCode(response.StatusCode, response);
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("DeleteComment/{id}")]
     public async Task<ActionResult<GlobalResponse<ResponseResultGlobally>>> DeleteComment(
         long id, CancellationToken cancellationToken = default)
     {

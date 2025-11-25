@@ -18,10 +18,11 @@ import {UserListDto} from '../../../dtos/accounts/user.models';
 import {UserService} from '../../../services/user.service';
 import {TaskFormComponent} from '../task-form.component/task-form.component';
 import {AttachmentModalComponent} from '../attachment-modal.component/attachment-modal.component';
+import {CommentModalComponent} from '../comment-modal.component/comment-modal.component';
 
 @Component({
   selector: 'app-project-detail',
-  imports: [NgIf, NgForOf, FormsModule, CdkDropList, TaskFormComponent, CdkDrag, AttachmentModalComponent],
+  imports: [NgIf, NgForOf, FormsModule, CdkDropList, TaskFormComponent, CdkDrag, AttachmentModalComponent, CommentModalComponent],
   templateUrl: './project-detail.component.html',
   styleUrl: './project-detail.component.css'
 })
@@ -111,7 +112,20 @@ export class ProjectDetailComponent implements OnInit {
     this.doneTasks = this.tasks.filter(task => task.status === TaskStatus.Done);
     this.cancelledTasks = this.tasks.filter(task => task.status === TaskStatus.Cancelled);
   }
+// اضافه کردن properties
+  showCommentModal = false;
+  selectedTaskForComment: TaskItemDto | null = null;
 
+// اضافه کردن متدها
+  openCommentModal(task: TaskItemDto): void {
+    this.selectedTaskForComment = task;
+    this.showCommentModal = true;
+  }
+
+  closeCommentModal(): void {
+    this.showCommentModal = false;
+    this.selectedTaskForComment = null;
+  }
   loadUsers(): void {
     this.userService.getAll().subscribe({
       next: (response) => {

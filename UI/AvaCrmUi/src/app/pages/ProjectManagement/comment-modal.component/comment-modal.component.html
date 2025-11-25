@@ -1,0 +1,133 @@
+<div class="modal-overlay" (click)="onClose()">
+  <div class="modal-container" (click)="$event.stopPropagation()">
+    <!-- هدر مودال -->
+    <div class="modal-header">
+      <h2>
+        <i class="fas fa-comments"></i>
+        کامنت‌های تسک: {{ taskTitle }}
+      </h2>
+      <button class="btn-close" (click)="onClose()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <!-- بدنه مودال -->
+    <div class="modal-body">
+      <!-- لیست کامنت‌ها -->
+      <div class="comments-list" #commentsContainer>
+        <div *ngIf="loading" class="loading-comments">
+          <i class="fas fa-spinner fa-spin"></i>
+          <span>در حال بارگذاری کامنت‌ها...</span>
+        </div>
+
+        <div *ngIf="!loading && comments.length === 0" class="no-comments">
+          <i class="fas fa-comment-slash"></i>
+          <p>هنوز کامنتی ثبت نشده است</p>
+        </div>
+
+        <div *ngFor="let comment of comments" class="comment-item">
+          <div class="comment-avatar">
+            <i class="fas fa-user-circle"></i>
+          </div>
+
+          <div class="comment-content">
+            <div class="comment-header">
+              <span class="comment-author">
+                {{ getUserName(comment.createdBy) }}
+              </span>
+              <span class="comment-date">
+                {{ toPersianDate(comment.creationDate) }}
+              </span>
+
+              <div class="comment-actions" *ngIf="canEditComment(comment)">
+                <button class="btn-icon btn-edit" (click)="startEditComment(comment)">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn-icon btn-danger" (click)="deleteComment(comment)">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="comment-text" *ngIf="!isEditing(comment)">
+              {{ comment.content }}
+            </div>
+
+            <!-- فرم ویرایش کامنت -->
+            <div class="comment-edit-form" *ngIf="isEditing(comment)" [formGroup]="editCommentForm">
+              <textarea
+                formControlName="content"
+                class="edit-textarea"
+                placeholder="متن کامنت را ویرایش کنید..."
+                rows="3">
+              </textarea>
+              <div class="form-error" *ngIf="editCommentForm.get('content')?.invalid && editCommentForm.get('content')?.touched">
+                متن کامنت الزامی است
+              </div>
+              <div class="edit-actions">
+                <button
+                  class="btn btn-primary btn-sm"
+                  (click)="saveEditComment(comment)"
+                  [disabled]="editCommentForm.invalid">
+                  <i class="fas fa-save"></i>
+                  ذخیره
+                </button>
+                <button class="btn btn-secondary btn-sm" (click)="cancelEditComment()">
+                  <i class="fas fa-times"></i>
+                  لغو
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- صفحه‌بندی -->
+      <div class="pagination-section" *ngIf="totalPages > 1">
+        <div class="pagination-info">
+          نمایش {{ comments.length }} از {{ totalCount }} کامنت
+        </div>
+
+        <div class="pagination-controls">
+          <button
+            class="btn btn-secondary btn-sm"
+            (click)="loadMoreComments()"
+            [disabled]="!hasNextPage || loading">
+            <i class="fas fa-chevron-down"></i>
+            بارگذاری بیشتر
+          </button>
+        </div>
+      </div>
+
+      <!-- فرم افزودن کامنت جدید -->
+      <div class="add-comment-section">
+        <div class="comment-avatar current-user">
+          <i class="fas fa-user-circle"></i>
+        </div>
+
+        <div class="add-comment-form" [formGroup]="newCommentForm">
+          <textarea
+            formControlName="content"
+            class="comment-textarea"
+            placeholder="کامنت جدید خود را بنویسید..."
+            rows="3">
+          </textarea>
+          <div class="form-error" *ngIf="newCommentForm.get('content')?.invalid && newCommentForm.get('content')?.touched">
+            متن کامنت الزامی است
+          </div>
+
+          <div class="comment-actions">
+            <button
+              class="btn btn-primary"
+              (click)="addComment()"
+              [disabled]="newCommentForm.invalid || addingComment">
+              <i class="fas fa-paper-plane" *ngIf="!addingComment"></i>
+              <i class="fas fa-spinner fa-spin" *ngIf="addingComment"></i>
+              {{ addingComment ? 'در حال ارسال...' : 'ارسال کامنت' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

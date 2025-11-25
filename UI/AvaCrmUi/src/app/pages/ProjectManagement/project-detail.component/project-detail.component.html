@@ -84,6 +84,10 @@
                   <button class="btn-icon" (click)="openEditTaskModal(task)">
                     <i class="fas fa-edit"></i>
                   </button>
+                  <button class="btn-icon btn-info" (click)="openCommentModal(task)">
+                    <i class="fas fa-comments"></i>
+                  </button>
+
                   <!-- اضافه کردن دکمه فایل -->
                   <button class="btn-icon btn-info" (click)="openAttachmentModal(task)">
                     <i class="fas fa-paperclip"></i>
@@ -149,11 +153,15 @@
                   <button class="btn-icon" (click)="openEditTaskModal(task)">
                     <i class="fas fa-edit"></i>
                   </button>
+                  <button class="btn-icon btn-info" (click)="openCommentModal(task)">
+                    <i class="fas fa-comments"></i>
+                  </button>
+
                   <!-- اضافه کردن دکمه فایل -->
                   <button class="btn-icon btn-info" (click)="openAttachmentModal(task)">
                     <i class="fas fa-paperclip"></i>
                   </button>
-                 
+
                   <button class="btn-icon btn-danger" (click)="deleteTask(task)">
                     <i class="fas fa-trash"></i>
                   </button>
@@ -214,6 +222,10 @@
                   <button class="btn-icon" (click)="openEditTaskModal(task)">
                     <i class="fas fa-edit"></i>
                   </button>
+                  <button class="btn-icon btn-info" (click)="openCommentModal(task)">
+                    <i class="fas fa-comments"></i>
+                  </button>
+
                   <!-- اضافه کردن دکمه فایل -->
                   <button class="btn-icon btn-info" (click)="openAttachmentModal(task)">
                     <i class="fas fa-paperclip"></i>
@@ -279,6 +291,10 @@
                   <button class="btn-icon" (click)="openEditTaskModal(task)">
                     <i class="fas fa-edit"></i>
                   </button>
+                  <button class="btn-icon btn-info" (click)="openCommentModal(task)">
+                    <i class="fas fa-comments"></i>
+                  </button>
+
                   <!-- اضافه کردن دکمه فایل -->
                   <button class="btn-icon btn-info" (click)="openAttachmentModal(task)">
                     <i class="fas fa-paperclip"></i>
@@ -347,7 +363,13 @@
   (formSubmit)="onTaskUpdated($event)"
   (formCancel)="closeEditTaskModal()">
 </app-task-form>
-
+<!-- Comment Modal -->
+<app-comment-modal
+  *ngIf="showCommentModal && selectedTaskForComment"
+  [taskId]="selectedTaskForComment.id"
+  [taskTitle]="selectedTaskForComment.title"
+  (modalClose)="closeCommentModal()">
+</app-comment-modal>
 <ng-template #loadingTemplate>
   <div class="loading-container">
     <i class="fas fa-spinner fa-spin"></i>
