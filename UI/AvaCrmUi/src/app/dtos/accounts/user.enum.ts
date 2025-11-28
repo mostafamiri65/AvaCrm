@@ -5,9 +5,11 @@ export enum UserGender {
 
 export enum LoginState
 {
-  Success,
-  InvalidCredentials,
-  LockedOut,
-  RequiresTwoFactor,
-  TemporaryLockedOut
+  Success = 0,
+  InvalidCredentials = 1,
+  RequiresTwoFactor = 2,
+  TemporaryLockedOut = 3,
+  LockedOut = 4,
+  CaptchaRequired = 5,
+  CaptchaFailed = 6
 }

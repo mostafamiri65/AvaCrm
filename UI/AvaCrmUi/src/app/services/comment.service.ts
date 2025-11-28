@@ -8,7 +8,7 @@ import {CommentDto, CreateCommentDto, UpdateCommentDto} from '../dtos/ProjectMan
   providedIn: 'root'
 })
 export class CommentService {
-  private apiUrl = 'api/Comments';
+  private apiUrl = '/Comments';
 
   constructor(private http: HttpClient) {}
 

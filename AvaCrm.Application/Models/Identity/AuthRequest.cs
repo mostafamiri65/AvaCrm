@@ -4,4 +4,6 @@ public class AuthRequest
 {
 	public string Username { get; set; } = string.Empty;
 	public string Password { get; set; } = string.Empty;
+    public string? CaptchaId { get; set; }
+    public string? CaptchaAnswer { get; set; }
 }

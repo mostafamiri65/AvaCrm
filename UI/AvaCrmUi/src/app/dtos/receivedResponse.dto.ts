@@ -4,5 +4,6 @@ import {UserDto} from './accounts/user.dto';
 export interface  LoginResponseDto{
   loginState : LoginState,
   token : string,
-  user : UserDto
+  user : UserDto,
+  message : string,
 }

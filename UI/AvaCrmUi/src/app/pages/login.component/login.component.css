@@ -1,3 +1,90 @@
 .fontIransans{
   font-family: iransans, serif;
 }
+/* login.component.css */
+.captcha-section {
+  border: 2px solid #e9ecef !important;
+  transition: all 0.3s ease;
+}
+
+.captcha-section:hover {
+  border-color: #007bff !important;
+}
+
+.question-box {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-left: 4px solid #007bff !important;
+}
+
+.captcha-options .btn {
+  transition: all 0.2s ease;
+  border: 2px solid #dee2e6;
+}
+
+.captcha-options .btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.captcha-options .btn-primary {
+  border-color: #007bff;
+  font-weight: bold;
+}
+
+/* responsive adjustments */
+@media (max-width: 576px) {
+  .captcha-options .col-6 {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+
+  .captcha-options .btn {
+    margin-bottom: 0.5rem;
+  }
+}
+
+/* animation for captcha refresh */
+@keyframes refreshSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.fa-redo {
+  transition: transform 0.3s ease;
+}
+
+.btn:active .fa-redo {
+  animation: refreshSpin 0.5s ease;
+}
+
+/* loading states */
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.spinner-border-sm {
+  width: 1rem;
+  height: 1rem;
+}
+
+/* alert improvements */
+.alert {
+  border: none;
+  border-radius: 8px;
+}
+
+.alert-success {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.alert-danger {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.alert-warning {
+  background-color: #fff3cd;
+  color: #856404;
+}

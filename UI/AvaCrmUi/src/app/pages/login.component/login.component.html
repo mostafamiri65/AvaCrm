@@ -1,3 +1,57 @@
+<!--<div class="page-wrapper full-page fontIransans">-->
+<!--  <div class="page-content d-flex align-items-center justify-content-center">-->
+<!--    <div class="row w-100 mx-0 auth-page">-->
+<!--      <div class="col-md-8 col-xl-6 mx-auto">-->
+<!--        <div class="card">-->
+<!--          <div class="row">-->
+<!--            <div class="col-md-4 pe-md-0">-->
+<!--              <div class="auth-side-wrapper"></div>-->
+<!--            </div>-->
+<!--            <div class="col-md-8 ps-md-0">-->
+<!--              <div class="auth-form-wrapper px-4 py-5">-->
+<!--                <a href="#" class="noble-ui-logo d-block mb-2">Ava<span>CRM</span></a>-->
+<!--                <h5 class="text-muted fw-normal mb-4">خوش آمدید! به حساب کاربری خود وارد شوید</h5>-->
+
+<!--                &lt;!&ndash; نمایش پیام موفقیت &ndash;&gt;-->
+<!--                <div *ngIf="successMessage" class="alert alert-success">-->
+<!--                  {{ successMessage }}-->
+<!--                </div>-->
+
+<!--                &lt;!&ndash; نمایش خطا &ndash;&gt;-->
+<!--                <div *ngIf="errorMessage" class="alert alert-danger">-->
+<!--                  {{ errorMessage }}-->
+<!--                </div>-->
+
+<!--                <form class="forms-sample" (submit)="loginSubmit()" #loginForm="ngForm">-->
+<!--                  <div class="mb-3">-->
+<!--                    <label for="userEmail" class="form-label">آدرس ایمیل | شماره موبایل</label>-->
+<!--                    <input type="text" class="form-control" id="userEmail"-->
+<!--                           [(ngModel)]="model.username" name="username"-->
+<!--                           placeholder="ایمیل یا شماره موبایل را وارد نمایید">-->
+<!--                  </div>-->
+<!--                  <div class="mb-3">-->
+<!--                    <label for="userPassword" class="form-label">رمز عبور</label>-->
+<!--                    <input type="password" class="form-control" id="userPassword"-->
+<!--                           [(ngModel)]="model.password" name="password"-->
+<!--                           autocomplete="current-password" placeholder="رمز عبور را وارد نمایید">-->
+<!--                  </div>-->
+<!--                  <div>-->
+<!--                    <button type="submit" class="btn btn-primary me-2 mb-2 mb-md-0 text-white"-->
+<!--                            [disabled]="isLoading">-->
+<!--                      {{ isLoading ? 'در حال ورود...' : 'ورود' }}-->
+<!--                    </button>-->
+<!--                  </div>-->
+<!--                </form>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</div>-->
+
+<!-- login.component.html -->
 <div class="page-wrapper full-page fontIransans">
   <div class="page-content d-flex align-items-center justify-content-center">
     <div class="row w-100 mx-0 auth-page">
@@ -13,13 +67,27 @@
                 <h5 class="text-muted fw-normal mb-4">خوش آمدید! به حساب کاربری خود وارد شوید</h5>
 
                 <!-- نمایش پیام موفقیت -->
-                <div *ngIf="successMessage" class="alert alert-success">
+                <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show" role="alert">
+                  <i class="fas fa-check-circle me-2"></i>
                   {{ successMessage }}
+                  <button type="button" class="btn-close" (click)="successMessage = ''"></button>
                 </div>
 
                 <!-- نمایش خطا -->
-                <div *ngIf="errorMessage" class="alert alert-danger">
+                <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show" role="alert">
+                  <i class="fas fa-exclamation-triangle me-2"></i>
                   {{ errorMessage }}
+                  <button type="button" class="btn-close" (click)="errorMessage = ''"></button>
+                </div>
+
+                <!-- نمایش اطلاعات امنیتی -->
+                <div *ngIf="securityCheckResult &&
+                securityCheckResult?.failedAttempts &&
+                securityCheckResult.failedAttempts > 0"
+                     class="alert alert-warning">
+                  <i class="fas fa-shield-alt me-2"></i>
+                  <strong>توجه:</strong>
+                  {{ securityCheckResult.failedAttempts }} بار ورود ناموفق
                 </div>
 
                 <form class="forms-sample" (submit)="loginSubmit()" #loginForm="ngForm">
@@ -27,21 +95,121 @@
                     <label for="userEmail" class="form-label">آدرس ایمیل | شماره موبایل</label>
                     <input type="text" class="form-control" id="userEmail"
                            [(ngModel)]="model.username" name="username"
-                           placeholder="ایمیل یا شماره موبایل را وارد نمایید">
+                           placeholder="ایمیل یا شماره موبایل را وارد نمایید"
+                           [disabled]="isLoading">
                   </div>
                   <div class="mb-3">
                     <label for="userPassword" class="form-label">رمز عبور</label>
                     <input type="password" class="form-control" id="userPassword"
                            [(ngModel)]="model.password" name="password"
-                           autocomplete="current-password" placeholder="رمز عبور را وارد نمایید">
+                           autocomplete="current-password" placeholder="رمز عبور را وارد نمایید"
+                           [disabled]="isLoading">
                   </div>
-                  <div>
-                    <button type="submit" class="btn btn-primary me-2 mb-2 mb-md-0 text-white"
-                            [disabled]="isLoading">
-                      {{ isLoading ? 'در حال ورود...' : 'ورود' }}
+
+                  <!-- بخش کپچا -->
+                  <div *ngIf="showCaptcha" class="captcha-section mb-3 p-3 border rounded bg-light">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                      <h6 class="mb-0 text-primary">
+                        <i class="fas fa-shield-alt me-2"></i>
+                        تأیید امنیتی
+                      </h6>
+                      <button type="button" class="btn btn-sm btn-outline-secondary"
+                              (click)="refreshCaptcha()" [disabled]="isLoading">
+                        <i class="fas fa-redo me-1"></i>
+                        کد جدید
+                      </button>
+                    </div>
+
+                    <!-- نمایش سوال کپچا -->
+                    <div *ngIf="captchaChallenge" class="captcha-challenge">
+                      <div class="question-box p-2 mb-3 bg-white border rounded">
+                        <strong class="text-dark">{{ captchaChallenge.question }}</strong>
+                      </div>
+
+                      <!-- اگر گزینه‌ای وجود دارد (برای سوالات چندگزینه‌ای) -->
+                      <div *ngIf="captchaChallenge.options && captchaChallenge.options.length > 0"
+                           class="captcha-options">
+                        <div class="row g-2">
+                          <div *ngFor="let option of captchaChallenge.options"
+                               class="col-6">
+                            <button type="button"
+                                    class="btn w-100"
+                                    [class.btn-outline-primary]="model.captchaAnswer !== option"
+                                    [class.btn-primary]="model.captchaAnswer === option"
+                                    (click)="selectCaptchaOption(option)"
+                                    [disabled]="isLoading">
+                              {{ option }}
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- اگر گزینه‌ای نیست (برای سوالات متنی) -->
+                      <div *ngIf="!captchaChallenge.options || captchaChallenge.options.length === 0"
+                           class="captcha-input">
+                        <input type="text" class="form-control"
+                               [(ngModel)]="model.captchaAnswer" name="captchaAnswer"
+                               placeholder="پاسخ خود را وارد کنید"
+                               [disabled]="isLoading">
+                      </div>
+                    </div>
+
+                    <!-- نمایش لودینگ برای کپچا -->
+                    <div *ngIf="!captchaChallenge && showCaptcha" class="text-center py-3">
+                      <div class="spinner-border spinner-border-sm text-primary me-2"></div>
+                      <span class="text-muted">در حال تولید کد امنیتی...</span>
+                    </div>
+
+                    <!-- راهنمای کپچا -->
+                    <small class="text-muted">
+                      <i class="fas fa-info-circle me-1"></i>
+                      برای امنیت بیشتر، لطفاً به سوال بالا پاسخ دهید
+                    </small>
+                  </div>
+
+                  <!-- دکمه ارسال -->
+                  <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary btn-lg"
+                            [disabled]="isLoading || isCheckingSecurity">
+                      <span *ngIf="isLoading || isCheckingSecurity" class="d-flex align-items-center justify-content-center">
+                        <div class="spinner-border spinner-border-sm me-2" role="status">
+                          <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <span *ngIf="isCheckingSecurity">در حال بررسی امنیت...</span>
+                        <span *ngIf="isLoading && !isCheckingSecurity">در حال ورود...</span>
+                      </span>
+                      <span *ngIf="!isLoading && !isCheckingSecurity">
+                        <i class="fas fa-sign-in-alt me-2"></i>
+                        ورود به سیستم
+                      </span>
                     </button>
                   </div>
+
+                  <!-- لینک‌های کمکی -->
+                  <div class="mt-3 text-center">
+                    <a href="/forgot-password" class="text-decoration-none">رمز عبور خود را فراموش کرده‌اید؟</a>
+                  </div>
                 </form>
+
+                <!-- اطلاعات دیباگ (در صورت نیاز می‌توانید حذف کنید) -->
+                <div *ngIf="securityCheckResult" class="mt-3 p-2 bg-light rounded small">
+                  <div class="row">
+                    <div class="col-6">
+                      <strong>نیاز به کپچا:</strong>
+                      <span [class.text-success]="!securityCheckResult.requiresCaptcha"
+                            [class.text-warning]="securityCheckResult.requiresCaptcha">
+                        {{ securityCheckResult.requiresCaptcha ? 'بله' : 'خیر' }}
+                      </span>
+                    </div>
+                    <div class="col-6">
+                      <strong>وضعیت مسدودیت:</strong>
+                      <span [class.text-success]="!securityCheckResult.isBlocked"
+                            [class.text-danger]="securityCheckResult.isBlocked">
+                        {{ securityCheckResult.isBlocked ? 'مسدود' : 'آزاد' }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
