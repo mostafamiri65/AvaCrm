@@ -45,6 +45,8 @@ public static class PersistenceServicesRegistration
         services.AddScoped<IAttachmentRepository, AttachmentRepository>();
         services.AddScoped<ICommentRepository, CommentRepository>();
         services.AddScoped<IActivityLogRepository, ActivityLogRepository>();
+        services.AddScoped<ICurrencyRepository, CurrencyRepository>();
+        services.AddScoped<IUnitRepository, UnitRepository>();
         return services;
 	}
 }

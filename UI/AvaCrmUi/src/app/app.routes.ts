@@ -33,6 +33,8 @@ import {UserListComponent} from './pages/Common/user-list.component/user-list.co
 import {RoleListComponent} from './pages/Common/role-list.component/role-list.component';
 import {ProjectListComponent} from './pages/ProjectManagement/project-list.component/project-list.component';
 import {ProjectDetailComponent} from './pages/ProjectManagement/project-detail.component/project-detail.component';
+import {UnitsComponent} from './pages/Common/units.component/units.component';
+import {CurrenciesComponent} from './pages/Common/currencies.component/currencies.component';
 
 export const routes: Routes = [
   {
@@ -57,6 +59,14 @@ export const routes: Routes = [
       // Project Management
       {path: 'projects', component: ProjectListComponent},
       {path: 'projects/:id', component: ProjectDetailComponent},
+      {
+        path: 'settings/units', component: UnitsComponent,   data: { title: 'مدیریت واحدها' }
+      },
+
+      // مسیر ارزها
+      {
+        path: 'settings/currencies', component: CurrenciesComponent,  data: { title: 'مدیریت ارزها' }
+      },
 
     ],
 

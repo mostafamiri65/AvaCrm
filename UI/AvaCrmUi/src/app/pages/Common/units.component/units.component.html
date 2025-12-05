@@ -1,0 +1,189 @@
+<!-- components/settings/units/units.component.html -->
+<div class="page-content iranSans">
+  <div class="container-fluid">
+    <!-- هدر صفحه -->
+    <div class="row">
+      <div class="col-12">
+        <div class="page-title-box d-flex align-items-center justify-content-between">
+          <h4 class="mb-0">مدیریت واحدها</h4>
+          <button class="btn btn-primary" (click)="openAddModal()">
+            <i class="fas fa-plus me-2"></i>
+            افزودن واحد جدید
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- پیام‌ها -->
+    <div class="row mt-3">
+      <div class="col-12">
+        <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show">
+          {{ successMessage }}
+        </div>
+        <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show">
+          {{ errorMessage }}
+        </div>
+      </div>
+    </div>
+
+    <!-- جدول واحدها -->
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-hover table-striped">
+                <thead class="table-light">
+                <tr>
+                  <th>#</th>
+                  <th>نام واحد</th>
+                  <th>کد واحد</th>
+                  <th>دسته‌بندی</th>
+                  <th>عملیات</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngIf="isLoading">
+                  <td colspan="5" class="text-center">
+                    <div class="spinner-border text-primary" role="status">
+                      <span class="visually-hidden">در حال بارگذاری...</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr *ngFor="let unit of units; let i = index" class="animate__animated animate__fadeIn">
+                  <td>{{ i + 1 }}</td>
+                  <td>{{ unit.name }}</td>
+                  <td><span class="badge bg-primary">{{ unit.code }}</span></td>
+                  <td>{{ getCategoryName(unit.category) }}</td>
+                  <td>
+                    <div class="btn-group btn-group-sm">
+                      <button class="btn btn-outline-warning" (click)="openEditModal(unit)" title="ویرایش">
+                        <i class="fas fa-edit"></i>
+                      </button>
+                      <button class="btn btn-outline-danger" (click)="openDeleteModal(unit)" title="حذف">
+                        <i class="fas fa-trash"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+                <tr *ngIf="units.length === 0 && !isLoading">
+                  <td colspan="5" class="text-center text-muted">
+                    هیچ واحدی یافت نشد
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- مودال اضافه کردن واحد -->
+<div class="modal fade show" [class.show]="showAddModal" style="display: block;" *ngIf="showAddModal">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">افزودن واحد جدید</h5>
+        <button type="button" class="btn-close" (click)="closeModal()"></button>
+      </div>
+      <div class="modal-body">
+        <form (submit)="addUnit(); $event.preventDefault()">
+          <div class="mb-3">
+            <label class="form-label">نام واحد</label>
+            <input type="text" class="form-control" [(ngModel)]="newUnit.name" name="name" required
+                   placeholder="نام واحد را وارد کنید" maxlength="100">
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">کد واحد</label>
+            <input type="text" class="form-control" [(ngModel)]="newUnit.code" name="code" required
+                   placeholder="کد واحد را وارد کنید" maxlength="10">
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">دسته‌بندی</label>
+            <select class="form-select" [(ngModel)]="newUnit.category" name="category" required>
+              <option *ngFor="let cat of unitCategories" [value]="cat.value">{{ cat.label }}</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeModal()">انصراف</button>
+        <button type="button" class="btn btn-primary" (click)="addUnit()"
+                [disabled]="isLoading || !newUnit.name.trim() || !newUnit.code.trim()">
+          {{ isLoading ? 'در حال ذخیره...' : 'ذخیره' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-backdrop fade show" *ngIf="showAddModal"></div>
+
+<!-- مودال ویرایش واحد -->
+<div class="modal fade show" [class.show]="showEditModal" style="display: block;" *ngIf="showEditModal">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">ویرایش واحد</h5>
+        <button type="button" class="btn-close" (click)="closeModal()"></button>
+      </div>
+      <div class="modal-body">
+        <form (submit)="updateUnit(); $event.preventDefault()">
+          <div class="mb-3">
+            <label class="form-label">نام واحد</label>
+            <input type="text" class="form-control" [(ngModel)]="updatedUnit.name" name="name" required
+                   placeholder="نام واحد را وارد کنید" maxlength="100">
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">کد واحد</label>
+            <input type="text" class="form-control" [(ngModel)]="updatedUnit.code" name="code" required
+                   placeholder="کد واحد را وارد کنید" maxlength="10">
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">دسته‌بندی</label>
+            <select class="form-select" [(ngModel)]="updatedUnit.category" name="category" required>
+              <option *ngFor="let cat of unitCategories" [value]="cat.value">{{ cat.label }}</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeModal()">انصراف</button>
+        <button type="button" class="btn btn-warning" (click)="updateUnit()"
+                [disabled]="isLoading || !updatedUnit.name.trim() || !updatedUnit.code.trim()">
+          {{ isLoading ? 'در حال ویرایش...' : 'ویرایش' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-backdrop fade show" *ngIf="showEditModal"></div>
+
+<!-- مودال حذف واحد -->
+<div class="modal fade show" [class.show]="showDeleteModal" style="display: block;" *ngIf="showDeleteModal">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">تأیید حذف واحد</h5>
+        <button type="button" class="btn-close" (click)="closeModal()"></button>
+      </div>
+      <div class="modal-body">
+        <p>آیا از حذف واحد "{{ unitToDelete.name }}" با کد "{{ unitToDelete.code }}" مطمئن هستید؟</p>
+        <p class="text-danger">این عمل قابل بازگشت نیست!</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeModal()">انصراف</button>
+        <button type="button" class="btn btn-danger" (click)="deleteUnit()" [disabled]="isLoading">
+          {{ isLoading ? 'در حال حذف...' : 'حذف' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-backdrop fade show" *ngIf="showDeleteModal"></div>

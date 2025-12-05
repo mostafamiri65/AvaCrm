@@ -212,7 +212,7 @@ public class TaskItemService : ITaskItemService
             res.StatusCode = (int)HttpStatusCode.OK;
             res.Data = _mapper.Map<TaskItemDto>(task);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             res.Message = "ویرایش با خطا مواجه شد";
             res.StatusCode = (int)HttpStatusCode.InternalServerError;

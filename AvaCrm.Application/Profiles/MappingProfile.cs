@@ -1,5 +1,7 @@
 ﻿using AvaCrm.Application.DTOs.Commons.Cities;
+using AvaCrm.Application.DTOs.Commons.Currencies;
 using AvaCrm.Application.DTOs.Commons.Provinces;
+using AvaCrm.Application.DTOs.Commons.Units;
 using AvaCrm.Application.DTOs.CustomerManagement.ContactPersons;
 using AvaCrm.Application.DTOs.CustomerManagement.CustomerAddresses;
 using AvaCrm.Application.DTOs.CustomerManagement.Customers;
@@ -13,6 +15,7 @@ using AvaCrm.Application.DTOs.ProjectManagement;
 using AvaCrm.Domain.Entities.CustomerManagement;
 using AvaCrm.Domain.Entities.ProjectManagement;
 using AvaCrm.Domain.Enums.CustomerManagement;
+using Unit = AvaCrm.Domain.Entities.Commons.Unit;
 
 namespace AvaCrm.Application.Profiles;
 
@@ -20,10 +23,13 @@ public class MappingProfile : Profile
 {
     public MappingProfile()
     {
+        #region Commons
+
         #region Country
         CreateMap<Country, CountryDto>().ReverseMap();
         CreateMap<Country, CreateCountryDto>().ReverseMap();
         #endregion
+
         #region Province
         CreateMap<Province, ProvinceDto>().ReverseMap();
         CreateMap<Province, CreateProvinceDto>().ReverseMap();
@@ -33,6 +39,20 @@ public class MappingProfile : Profile
         CreateMap<City, CityDto>().ReverseMap();
         CreateMap<City, CreateCityDto>().ReverseMap();
         #endregion
+
+        #region Unit
+        CreateMap<Unit, UnitDto>().ReverseMap();
+        CreateMap<Unit,CreateUnitDto>().ReverseMap();
+        CreateMap<Unit,UpdateUnitDto>().ReverseMap();
+        #endregion
+
+        #region Currencies
+        CreateMap<Currency, CurrencyDto>().ReverseMap();
+        CreateMap<Currency, CreateCurrencyDto>().ReverseMap();
+        CreateMap<Currency, UpdateCurrencyDto>().ReverseMap();
+        #endregion
+        #endregion
+
 
         #region Customer Management
 

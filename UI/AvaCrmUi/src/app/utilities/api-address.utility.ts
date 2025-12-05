@@ -172,4 +172,33 @@ export class ApiAddressUtility {
   static deleteAttachment(attachmentId: number): string {
     return `/Attachments/DeleteAttachment/${attachmentId}`;
   }
+
+  // Units
+  static allUnits: string = "/Units";
+  static unitById(id: number): string {
+    return `/Units/${id}`;
+  }
+  static unitsByCategory(category: number): string {
+    return `/Units/by-category/${category}`;
+  }
+  static createUnit: string = "/Units";
+  static updateUnit: string = "/Units";
+  static deleteUnit(id: number): string {
+    return `/Units/${id}`;
+  }
+
+  // Currencies
+  static allCurrencies: string = "/Currencies";
+  static currencyById(id: number): string {
+    return `/Currencies/${id}`;
+  }
+  static defaultCurrency: string = "/Currencies/default";
+  static createCurrency: string = "/Currencies";
+  static updateCurrency: string = "/Currencies";
+  static deleteCurrency(id: number): string {
+    return `/Currencies/${id}`;
+  }
+  static changeDefaultCurrency(currencyId: number): string {
+    return `/Currencies/${currencyId}/set-default`;
+  }
 }

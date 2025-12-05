@@ -1,0 +1,258 @@
+<!-- components/settings/currencies/currencies.component.html -->
+<div class="page-content iranSans">
+  <div class="container-fluid">
+    <!-- هدر صفحه -->
+    <div class="row">
+      <div class="col-12">
+        <div class="page-title-box d-flex align-items-center justify-content-between">
+          <h4 class="mb-0">مدیریت ارزها</h4>
+          <button class="btn btn-primary" (click)="openAddModal()">
+            <i class="fas fa-plus me-2"></i>
+            افزودن ارز جدید
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- پیام‌ها -->
+    <div class="row mt-3">
+      <div class="col-12">
+        <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show">
+          {{ successMessage }}
+        </div>
+        <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show">
+          {{ errorMessage }}
+        </div>
+      </div>
+    </div>
+
+    <!-- جدول ارزها -->
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-hover table-striped">
+                <thead class="table-light">
+                <tr>
+                  <th>#</th>
+                  <th>نام ارز</th>
+                  <th>کد</th>
+                  <th>نماد</th>
+                  <th>تعداد اعشار</th>
+                  <th>وضعیت</th>
+                  <th>عملیات</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngIf="isLoading">
+                  <td colspan="7" class="text-center">
+                    <div class="spinner-border text-primary" role="status">
+                      <span class="visually-hidden">در حال بارگذاری...</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr *ngFor="let currency of currencies; let i = index" class="animate__animated animate__fadeIn">
+                  <td>{{ i + 1 }}</td>
+                  <td>
+                    {{ currency.name }}
+                    <span *ngIf="currency.isDefault" class="badge bg-success ms-2">پیش‌فرض</span>
+                  </td>
+                  <td><span class="badge bg-primary">{{ currency.code }}</span></td>
+                  <td>{{ currency.symbol || '---' }}</td>
+                  <td>{{ currency.decimalPlaces }}</td>
+                  <td>
+                      <span [class]="currency.isActive ? 'badge bg-success' : 'badge bg-danger'">
+                        {{ currency.isActive ? 'فعال' : 'غیرفعال' }}
+                      </span>
+                  </td>
+                  <td>
+                    <div class="btn-group btn-group-sm">
+                      <button *ngIf="!currency.isDefault"
+                              class="btn btn-outline-success btn-sm"
+                              (click)="changeDefaultStatus(currency, true)"
+                              title="تنظیم به عنوان پیش‌فرض">
+                        <i class="fas fa-check-circle"></i>
+                      </button>
+
+                      <button *ngIf="currency.isDefault"
+                              class="btn btn-outline-warning btn-sm"
+                              (click)="changeDefaultStatus(currency, false)"
+                              title="حذف از حالت پیش‌فرض">
+                        <i class="fas fa-times-circle"></i>
+                      </button>
+
+                      <button class="btn btn-outline-warning" (click)="openEditModal(currency)" title="ویرایش">
+                        <i class="fas fa-edit"></i>
+                      </button>
+
+                      <button class="btn btn-outline-danger" (click)="openDeleteModal(currency)" title="حذف">
+                        <i class="fas fa-trash"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+                <tr *ngIf="currencies.length === 0 && !isLoading">
+                  <td colspan="7" class="text-center text-muted">
+                    هیچ ارزی یافت نشد
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- مودال اضافه کردن ارز -->
+<div class="modal fade show" [class.show]="showAddModal" style="display: block;" *ngIf="showAddModal">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">افزودن ارز جدید</h5>
+        <button type="button" class="btn-close" (click)="closeModal()"></button>
+      </div>
+      <div class="modal-body">
+        <form (submit)="addCurrency(); $event.preventDefault()">
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">کد ارز</label>
+              <input type="text" class="form-control" [(ngModel)]="newCurrency.code" name="code" required
+                     placeholder="مثال: IRR, USD" maxlength="10">
+              <div class="form-text">کد استاندارد ارز (حداکثر 10 کاراکتر)</div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label class="form-label">نام ارز</label>
+              <input type="text" class="form-control" [(ngModel)]="newCurrency.name" name="name" required
+                     placeholder="مثال: ریال ایران" maxlength="100">
+              <div class="form-text">نام کامل ارز</div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">نماد</label>
+              <input type="text" class="form-control" [(ngModel)]="newCurrency.symbol" name="symbol"
+                     placeholder="مثال: ﷼, $, €" maxlength="5">
+              <div class="form-text">نماد ارز (حداکثر 5 کاراکتر)</div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label class="form-label">تعداد اعشار</label>
+              <input type="number" class="form-control" [(ngModel)]="newCurrency.decimalPlaces" name="decimalPlaces"
+                     min="0" max="8" step="1" required>
+              <div class="form-text">تعداد رقم اعشار (0 برای ریال، 2 برای دلار)</div>
+            </div>
+          </div>
+
+          <div class="mb-3 form-check">
+            <input type="checkbox" class="form-check-input" [(ngModel)]="newCurrency.isDefault" name="isDefault" id="isDefault">
+            <label class="form-check-label" for="isDefault">تنظیم به عنوان ارز پیش‌فرض سیستم</label>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeModal()">انصراف</button>
+        <button type="button" class="btn btn-primary" (click)="addCurrency()"
+                [disabled]="isLoading || !newCurrency.name.trim() || !newCurrency.code.trim()">
+          {{ isLoading ? 'در حال ذخیره...' : 'ذخیره' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-backdrop fade show" *ngIf="showAddModal"></div>
+
+<!-- مودال ویرایش ارز -->
+<div class="modal fade show" [class.show]="showEditModal" style="display: block;" *ngIf="showEditModal">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">ویرایش ارز</h5>
+        <button type="button" class="btn-close" (click)="closeModal()"></button>
+      </div>
+      <div class="modal-body">
+        <form (submit)="updateCurrency(); $event.preventDefault()">
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">کد ارز</label>
+              <input type="text" class="form-control" [(ngModel)]="updatedCurrency.code" name="code" required
+                     placeholder="مثال: IRR, USD" maxlength="10">
+              <div class="form-text">کد استاندارد ارز (حداکثر 10 کاراکتر)</div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label class="form-label">نام ارز</label>
+              <input type="text" class="form-control" [(ngModel)]="updatedCurrency.name" name="name" required
+                     placeholder="مثال: ریال ایران" maxlength="100">
+              <div class="form-text">نام کامل ارز</div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">نماد</label>
+              <input type="text" class="form-control" [(ngModel)]="updatedCurrency.symbol" name="symbol"
+                     placeholder="مثال: ﷼, $, €" maxlength="5">
+              <div class="form-text">نماد ارز (حداکثر 5 کاراکتر)</div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label class="form-label">تعداد اعشار</label>
+              <input type="number" class="form-control" [(ngModel)]="updatedCurrency.decimalPlaces" name="decimalPlaces"
+                     min="0" max="8" step="1" required>
+              <div class="form-text">تعداد رقم اعشار (0 برای ریال، 2 برای دلار)</div>
+            </div>
+          </div>
+
+          <div class="mb-3 form-check">
+            <input type="checkbox" class="form-check-input" [(ngModel)]="updatedCurrency.isDefault" name="isDefault" id="editIsDefault">
+            <label class="form-check-label" for="editIsDefault">تنظیم به عنوان ارز پیش‌فرض سیستم</label>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeModal()">انصراف</button>
+        <button type="button" class="btn btn-warning" (click)="updateCurrency()"
+                [disabled]="isLoading || !updatedCurrency.name.trim() || !updatedCurrency.code.trim()">
+          {{ isLoading ? 'در حال ویرایش...' : 'ویرایش' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-backdrop fade show" *ngIf="showEditModal"></div>
+
+<!-- مودال حذف ارز -->
+<div class="modal fade show" [class.show]="showDeleteModal" style="display: block;" *ngIf="showDeleteModal">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">تأیید حذف ارز</h5>
+        <button type="button" class="btn-close" (click)="closeModal()"></button>
+      </div>
+      <div class="modal-body">
+        <p>آیا از حذف ارز "{{ currencyToDelete.name }}" با کد "{{ currencyToDelete.code }}" مطمئن هستید؟</p>
+
+        <div class="alert alert-warning" *ngIf="currencyToDelete.isDefault">
+          <i class="fas fa-exclamation-triangle me-2"></i>
+          این ارز به عنوان پیش‌فرض تنظیم شده است. برای حذف آن ابتدا باید ارز دیگری را به عنوان پیش‌فرض تنظیم کنید.
+        </div>
+
+        <p class="text-danger">این عمل قابل بازگشت نیست!</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeModal()">انصراف</button>
+        <button type="button" class="btn btn-danger" (click)="deleteCurrency()"
+                [disabled]="isLoading || currencyToDelete.isDefault">
+          {{ isLoading ? 'در حال حذف...' : 'حذف' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-backdrop fade show" *ngIf="showDeleteModal"></div>

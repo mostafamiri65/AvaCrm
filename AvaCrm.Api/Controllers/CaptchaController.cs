@@ -40,7 +40,7 @@ namespace AvaCrm.Api.Controllers
                 return StatusCode(500, new CaptchaResponse
                 {
                     Success = false,
-                    Message = "خطا در تولید کد امنیتی"
+                    Message = "خطا در تولید کد امنیتی" + ex.Message
                 });
             }
         }
@@ -63,7 +63,7 @@ namespace AvaCrm.Api.Controllers
                 return StatusCode(500, new CaptchaResponse
                 {
                     Success = false,
-                    Message = "خطا در بررسی کد امنیتی"
+                    Message = "خطا در بررسی کد امنیتی" + ex.Message
                 });
             }
         }

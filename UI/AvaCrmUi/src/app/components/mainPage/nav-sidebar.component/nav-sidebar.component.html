@@ -19,11 +19,38 @@
           <span class="link-title">داشبورد</span>
         </a>
       </li>
+
       <li class="nav-item nav-category">تنظیمات برنامه</li>
+
+      <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="collapse" href="#systemSettings" role="button" aria-expanded="false"
+           aria-controls="systemSettings">
+          <i class="link-icon" data-feather="settings"></i>
+          <span class="link-title">تنظیمات سیستم</span>
+          <i class="link-arrow" data-feather="chevron-down"></i>
+        </a>
+        <div class="collapse" id="systemSettings">
+          <ul class="nav sub-menu">
+            <li class="nav-item">
+              <a routerLink="/settings/currencies" class="nav-link">
+                <i class="fas fa-money-bill-wave me-2"></i>
+                مدیریت ارزها
+              </a>
+            </li>
+            <li class="nav-item">
+              <a routerLink="/settings/units" class="nav-link">
+                <i class="fas fa-balance-scale me-2"></i>
+                مدیریت واحدها
+              </a>
+            </li>
+          </ul>
+        </div>
+      </li>
+
       <li class="nav-item">
         <a class="nav-link" data-bs-toggle="collapse" href="#countries" role="button" aria-expanded="false"
            aria-controls="countries">
-          <i class="link-icon" data-feather="mail"></i>
+          <i class="link-icon" data-feather="globe"></i>
           <span class="link-title">کشور و استان ها</span>
           <i class="link-arrow" data-feather="chevron-down"></i>
         </a>
@@ -32,14 +59,14 @@
             <li class="nav-item">
               <a routerLink="/countries" class="nav-link">کشورها</a>
             </li>
-
           </ul>
         </div>
       </li>
+
       <li class="nav-item">
         <a class="nav-link" data-bs-toggle="collapse" href="#users" role="button" aria-expanded="false"
            aria-controls="users">
-          <i class="link-icon" data-feather="mail"></i>
+          <i class="link-icon" data-feather="users"></i>
           <span class="link-title">کاربری</span>
           <i class="link-arrow" data-feather="chevron-down"></i>
         </a>
@@ -51,59 +78,49 @@
             <li class="nav-item">
               <a routerLink="/users" class="nav-link">کاربران</a>
             </li>
-
           </ul>
         </div>
       </li>
+
       <li class="nav-item">
         <a routerLink="/tags" class="nav-link">
-          <i class="link-icon" data-feather="message-square"></i>
+          <i class="link-icon" data-feather="tag"></i>
           <span class="link-title">تگ ها</span>
         </a>
       </li>
-<!--      <li class="nav-item">-->
-<!--        <a href="../apps/calendar.html" class="nav-link">-->
-<!--          <i class="link-icon" data-feather="calendar"></i>-->
-<!--          <span class="link-title">تقویم رویداد میلادی</span>-->
-<!--        </a>-->
-<!--      </li>-->
-<!--      <li class="nav-item">-->
-<!--        <a href="../apps/calendar-jalali.html" class="nav-link">-->
-<!--          <i class="link-icon" data-feather="calendar"></i>-->
-<!--          <span class="link-title">تقویم رویداد شمسی</span>-->
-<!--        </a>-->
-<!--      </li>-->
+
       <li class="nav-item nav-category">مدیریت مشتری ها</li>
+
       <li class="nav-item">
-        <a class="nav-link" data-bs-toggle="collapse" href="#uiComponents" role="button" aria-expanded="false"
-           aria-controls="uiComponents">
-          <i class="link-icon" data-feather="feather"></i>
+        <a class="nav-link" data-bs-toggle="collapse" href="#customers" role="button" aria-expanded="false"
+           aria-controls="customers">
+          <i class="link-icon" data-feather="users"></i>
           <span class="link-title">مشتریان</span>
           <i class="link-arrow" data-feather="chevron-down"></i>
         </a>
-        <div class="collapse" id="uiComponents">
+        <div class="collapse" id="customers">
           <ul class="nav sub-menu">
             <li class="nav-item">
               <a routerLink="/customers" class="nav-link">مشتری</a>
             </li>
-
           </ul>
         </div>
       </li>
+
       <li class="nav-item nav-category">مدیریت پروژه</li>
+
       <li class="nav-item">
-        <a class="nav-link" data-bs-toggle="collapse" href="#uiComponents" role="button" aria-expanded="false"
-           aria-controls="uiComponents">
-          <i class="link-icon" data-feather="feather"></i>
+        <a class="nav-link" data-bs-toggle="collapse" href="#projects" role="button" aria-expanded="false"
+           aria-controls="projects">
+          <i class="link-icon" data-feather="briefcase"></i>
           <span class="link-title">پروژه ها</span>
           <i class="link-arrow" data-feather="chevron-down"></i>
         </a>
-        <div class="collapse" id="uiComponents">
+        <div class="collapse" id="projects">
           <ul class="nav sub-menu">
             <li class="nav-item">
               <a routerLink="/projects" class="nav-link">پروژه و تسک ها</a>
             </li>
-
           </ul>
         </div>
       </li>

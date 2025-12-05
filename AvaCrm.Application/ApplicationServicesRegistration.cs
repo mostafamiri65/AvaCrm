@@ -50,5 +50,6 @@ public static class ApplicationServicesRegistration
         services.AddTransient<MathCaptchaGenerator>();
         services.AddTransient<LogicCaptchaGenerator>();
         services.AddTransient<SequenceCaptchaGenerator>();
+
     }
 }
